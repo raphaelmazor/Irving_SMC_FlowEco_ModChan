@@ -1,9 +1,5 @@
 ## get GAM thresholds
 
-# gitcreds::gitcreds_set()
-# usethis::create_github_token() 
-# usethis::use_git_config(helper="cache --timeout=2600000")
-# credentials::set_github_pat("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")
 
 library(gam)
 library(tidyverse)
