@@ -1,0 +1,73 @@
+"","Index","FlowMetric","Impact","Hard Bottom","Natural","Soft Bottom (no hard sides)","Soft Bottom (two hard sides)"
+"1","asci","Dry-season median baseflow","UHLF",4.76190476190476,NA,NA,NA
+"2","asci","Dry-season median baseflow","UHMF",95.2380952380952,60,100,100
+"3","asci","Dry-season median baseflow","HMF",NA,40,NA,NA
+"4","asci","Fall pulse magnitude","UHLF",4.76190476190476,NA,NA,38.4615384615385
+"5","asci","Fall pulse magnitude","UHMF",95.2380952380952,60,100,61.5384615384615
+"6","asci","Fall pulse magnitude","HMF",NA,40,NA,NA
+"7","asci","10-year flood magnitude","UHLF",71.4285714285714,2.85714285714286,NA,44.4444444444444
+"8","asci","10-year flood magnitude","UHMF",28.5714285714286,74.2857142857143,100,55.5555555555556
+"9","asci","10-year flood magnitude","HMF",NA,22.8571428571429,NA,NA
+"10","asci","2-year flood magnitude","UHLF",14.2857142857143,9.25925925925926,NA,57.1428571428571
+"11","asci","2-year flood magnitude","UHMF",85.7142857142857,51.8518518518518,100,42.8571428571429
+"12","asci","2-year flood magnitude","HLF",NA,1.85185185185185,NA,NA
+"13","asci","2-year flood magnitude","HMF",NA,37.037037037037,NA,NA
+"14","asci","5-year flood magnitude","UHLF",7.14285714285714,NA,NA,66.6666666666667
+"15","asci","5-year flood magnitude","UHMF",92.8571428571429,74.3589743589744,100,33.3333333333333
+"16","asci","5-year flood magnitude","HMF",NA,25.6410256410256,NA,NA
+"17","asci","Magnitude of largest annual storm","UHLF",5.26315789473684,NA,NA,36.3636363636364
+"18","asci","Magnitude of largest annual storm","UHMF",94.7368421052632,63.1578947368421,100,63.6363636363636
+"19","asci","Magnitude of largest annual storm","HMF",NA,36.8421052631579,NA,NA
+"20","asci","Spring recession magnitude","UHUF",100,60,100,69.2307692307692
+"21","asci","Spring recession magnitude","HMF",NA,3.07692307692308,NA,NA
+"22","asci","Spring recession magnitude","HUF",NA,36.9230769230769,NA,NA
+"23","asci","Spring recession magnitude",NA,NA,NA,NA,30.7692307692308
+"24","asci","Wet-season low baseflow","UHMF",100,60,100,69.2307692307692
+"25","asci","Wet-season low baseflow","HMF",NA,40,NA,NA
+"26","asci","Wet-season low baseflow","UHLF",NA,NA,NA,30.7692307692308
+"27","asci","Wet-season median baseflow","UHMF",100,60,100,69.2307692307692
+"28","asci","Wet-season median baseflow","HMF",NA,40,NA,NA
+"29","asci","Wet-season median baseflow","UHLF",NA,NA,NA,30.7692307692308
+"30","csci","Dry-season median baseflow","UHLF",57.6923076923077,1.11111111111111,NA,15.3846153846154
+"31","csci","Dry-season median baseflow","UHMF",19.2307692307692,7.77777777777778,33.3333333333333,30.7692307692308
+"32","csci","Dry-season median baseflow","UHUF",23.0769230769231,26.6666666666667,66.6666666666667,53.8461538461538
+"33","csci","Dry-season median baseflow","HMF",NA,6.66666666666667,NA,NA
+"34","csci","Dry-season median baseflow","HUF",NA,57.7777777777778,NA,NA
+"35","csci","Fall pulse magnitude","UHLF",42.3076923076923,NA,NA,7.69230769230769
+"36","csci","Fall pulse magnitude","UHMF",23.0769230769231,4.44444444444444,33.3333333333333,38.4615384615385
+"37","csci","Fall pulse magnitude","UHUF",34.6153846153846,31.1111111111111,66.6666666666667,53.8461538461538
+"38","csci","Fall pulse magnitude","HMF",NA,2.22222222222222,NA,NA
+"39","csci","Fall pulse magnitude","HUF",NA,62.2222222222222,NA,NA
+"40","csci","10-year flood magnitude","UHLF",5.26315789473684,NA,NA,44.4444444444444
+"41","csci","10-year flood magnitude","UHMF",73.6842105263158,21.4285714285714,50,33.3333333333333
+"42","csci","10-year flood magnitude","UHUF",21.0526315789474,23.8095238095238,50,22.2222222222222
+"43","csci","10-year flood magnitude","HMF",NA,7.14285714285714,NA,NA
+"44","csci","10-year flood magnitude","HUF",NA,47.6190476190476,NA,NA
+"45","csci","2-year flood magnitude","UHMF",22.2222222222222,3.94736842105263,NA,NA
+"46","csci","2-year flood magnitude","UHUF",77.7777777777778,31.5789473684211,100,42.8571428571429
+"47","csci","2-year flood magnitude","HMF",NA,6.57894736842105,NA,NA
+"48","csci","2-year flood magnitude","HUF",NA,57.8947368421053,NA,NA
+"49","csci","2-year flood magnitude","UHLF",NA,NA,NA,57.1428571428571
+"50","csci","5-year flood magnitude","UHLF",5.26315789473684,NA,NA,66.6666666666667
+"51","csci","5-year flood magnitude","UHMF",63.1578947368421,16.6666666666667,100,16.6666666666667
+"52","csci","5-year flood magnitude","UHUF",31.5789473684211,24.0740740740741,NA,16.6666666666667
+"53","csci","5-year flood magnitude","HMF",NA,11.1111111111111,NA,NA
+"54","csci","5-year flood magnitude","HUF",NA,48.1481481481481,NA,NA
+"55","csci","Magnitude of largest annual storm","UHMF",59.0909090909091,11.3924050632911,50,18.1818181818182
+"56","csci","Magnitude of largest annual storm","UHUF",40.9090909090909,25.3164556962025,50,45.4545454545455
+"57","csci","Magnitude of largest annual storm","HMF",NA,3.79746835443038,NA,NA
+"58","csci","Magnitude of largest annual storm","HUF",NA,59.4936708860759,NA,NA
+"59","csci","Magnitude of largest annual storm","UHLF",NA,NA,NA,36.3636363636364
+"60","csci","Spring recession magnitude","UHMF",30.7692307692308,2.22222222222222,NA,30.7692307692308
+"61","csci","Spring recession magnitude","UHUF",69.2307692307692,33.3333333333333,100,69.2307692307692
+"62","csci","Spring recession magnitude","HMF",NA,3.33333333333333,NA,NA
+"63","csci","Spring recession magnitude","HUF",NA,61.1111111111111,NA,NA
+"64","csci","Wet-season low baseflow","UHMF",23.0769230769231,6.66666666666667,NA,15.3846153846154
+"65","csci","Wet-season low baseflow","UHUF",76.9230769230769,28.8888888888889,100,61.5384615384615
+"66","csci","Wet-season low baseflow","HMF",NA,2.22222222222222,NA,NA
+"67","csci","Wet-season low baseflow","HUF",NA,62.2222222222222,NA,NA
+"68","csci","Wet-season low baseflow","UHLF",NA,NA,NA,23.0769230769231
+"69","csci","Wet-season median baseflow","UHMF",23.0769230769231,4.44444444444444,NA,38.4615384615385
+"70","csci","Wet-season median baseflow","UHUF",76.9230769230769,31.1111111111111,100,61.5384615384615
+"71","csci","Wet-season median baseflow","HMF",NA,4.44444444444444,NA,NA
+"72","csci","Wet-season median baseflow","HUF",NA,60,NA,NA
