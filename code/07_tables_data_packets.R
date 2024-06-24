@@ -167,7 +167,7 @@ sites
 
 ## upload bio sites shape to get spatial info
 
-bio_sf <- st_read("input_data/01_bio_sites_all.shp")
+bio_sf <- st_read("ignore/01_bio_sites_all.shp")
 bio_sf
 
 ## subset all sites to sites in model

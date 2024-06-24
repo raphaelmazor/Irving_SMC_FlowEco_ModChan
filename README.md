@@ -99,6 +99,11 @@ need to upload some earlier data to extract the info
 
 Tidy and intuitive tables to send out to SMC members for modified analysis
 
+produces files
+07_ffm_bio_stresLevel_data_packet_all_counties_with_ranges.csv - results per site
+07_sum_strikes_all_sites_unhealthy_bio.csv - number of ffms per site tidy table
+
+also splits up data per county and saves to teams
 
 ## 07a_tables_data_packets_standard.R
 
