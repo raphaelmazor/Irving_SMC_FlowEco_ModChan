@@ -11,13 +11,14 @@ out.dir <- "final_figures/"
 getwd()
 # Upload data ---------------------------------------------------
 
-load(file = "final_data/03_bugs_algae_flow_joined_by_masterid_noPeakAugs.RData")
+load(file = "final_data/01_bugs_algae_flow_joined_by_masterid.RData")
+AllDataLongx <- AllData
 head(AllDataLongx)
 
 # Create df of model configurations ---------------------------------------
 
 ## bio 
-biol.endpoints<-unique(AllDataLongx$Metric)
+biol.endpoints<-"csci"
 biol.endpoints
 
 ## flow
@@ -28,13 +29,13 @@ flow.endpoints
 smooth_funcs <- c(3,6,9,12,15,18,20)
 
 ## quantiles - testing each quantile
-quants <- c(0.99, 0.90, 0.70, 0.50)
+quants <- c(0.99, 0.90, 0.70, 0.50, 0.1, 0.3) ## adding in lower quantile s for Chad
 
 ### make grid of all configurations
 bio_h_summary<-  expand.grid(biol.endpoints=biol.endpoints,flow.endpoints=flow.endpoints, 
                              quants = quants, smooth_funcs = smooth_funcs, stringsAsFactors = F)
 
-dim(bio_h_summary) ## 504, 4
+dim(bio_h_summary) ## 378, 4
 
 
 # Run the Models ----------------------------------------------------------
@@ -70,14 +71,14 @@ gam.lm <-lapply(1:nrow(bio_h_summary), function(i)
 })
 
 ## save models
-save(gam.lm, file = "ignore/04_csci_asci_quantile_gam_noPeakAugs.RData")
+save(gam.lm, file = "ignore/04_csci_asci_quantile_gam_updatedSites.RData")
 gam.lm
 
 
 # Model coefficients ------------------------------------------------------
 
 ## load models
-load(file = "ignore/04_csci_asci_quantile_gam_noPeakAugs.RData")
+load(file = "ignore/04_csci_asci_quantile_gam_updatedSites.RData")
 
 ### get rsqds and pvals
 
@@ -96,7 +97,7 @@ for(i in 1:length(gam.lm)) {
 }
 
 ## save configs and r sqds
-save(bio_h_summary, file="final_data/04_csci_asci_quantile_gam_rsqds_noPeakAugs.RData")
+save(bio_h_summary, file="final_data/04_csci_asci_quantile_gam_rsqds_updatedSites.RData")
 
 
 # Plot model performance --------------------------------------------------
@@ -114,7 +115,7 @@ P1 <- ggplot(data = bio_h_summary, aes(y=R2, x=quants, group = flow.endpoints, c
 
 P1
 
-file.name1 <- paste0(out.dir, "04_quants_rsq_smooths_noPeakAugs.jpg")
+file.name1 <- paste0(out.dir, "04_quants_rsq_smooths_updatedSites.jpg")
 ggsave(P1, filename=file.name1, dpi=300, height=5, width=7.5)
 
 ## plot k vals with AIC
@@ -128,7 +129,7 @@ P2 <- ggplot(data = bio_h_summary, aes(y=DevExplained, x=quants, group = flow.en
 
 P2
 
-file.name1 <- paste0(out.dir, "04_Quantiles_DevExpl_smooths_noPeakAugs.jpg")
+file.name1 <- paste0(out.dir, "04_Quantiles_DevExpl_smooths_updatedSites.jpg")
 ggsave(P2, filename=file.name1, dpi=300, height=5, width=7.5)
 
 
@@ -140,7 +141,30 @@ ggsave(P2, filename=file.name1, dpi=300, height=5, width=7.5)
 ## blank df
 DF <- NULL
 DF <- as.data.frame(DF)
-
+## reduce to only peaks etc to test augmentations
+# bio_h_summary_sub <- bio_h_summary %>%
+#   mutate(Index = rownames(bio_h_summary)) %>%
+#   filter(flow.endpoints %in% c("d_peak_10", "d_peak_2", "d_peak_5", "delta_q99"),
+#          smooth_funcs %in% c(3,6),
+#          quants %in% c(0.5, 0.9, 0.1))
+# 
+# 
+# bio_h_summary_sub$Index
+# 
+# gam.lm[[4]]
+# 
+# modInd <- as.numeric(bio_h_summary_sub$Index)
+# modInd
+# gam.lm_sub <- gam.lm[modInd]
+# gam.lm_sub
+# flow.endpoints <- flow.endpoints[6:9]
+# biol.endpoints <- "csci"
+# 
+# ## smoothing functions - testing smoothness
+# smooth_funcs <- c(3,6)
+# 
+# ## quantiles - testing each quantile
+# quants <- c( 0.90, 0.50, 0.1) ## adding in lower quantile s for Chad
 
 ### get predictions and fitted values
 for(i in 1:length(gam.lm)) {
@@ -193,10 +217,10 @@ DF <- DF %>%
          predictedVals = as.numeric(predictedVals),
          Quant = as.factor(Quant))
 
-save(DF, file = "ignore/04_quantGams_smooths_predictions_noPeakAugs.RData")
+save(DF, file = "ignore/04_quantGams_smooths_predictions_updatedSites.RData")
 str(DF)
 
-load(file = "ignore/04_quantGams_smooths_predictions_noPeakAugs.RData")
+load(file = "ignore/04_quantGams_smooths_predictions_updatedSites.RData")
 
 ### predicted figures
 bio <- unique(DF$Metric)
@@ -256,7 +280,7 @@ for(b in 1:length(bio)) {
     
     T1
     
-    file.name1 <- paste0(out.dir, "04_", bio[b], "_", mets[m], "_flow_response_predicted_gam_combined_all_quants_noPeakAugs.jpg")
+    file.name1 <- paste0(out.dir, "04_", bio[b], "_", mets[m], "_flow_response_predicted_gam_combined_all_quants_updatedSites.jpg")
     ggsave(T1, filename=file.name1, dpi=300, height=5, width=7.5)
     
   }
@@ -269,6 +293,51 @@ for(b in 1:length(bio)) {
 
 # Simplified Plot ---------------------------------------------------------
 
+## plot curve with NO points 
+
+### predicted figures
+bio <- unique(DF$Metric)
+mets <- unique(DF$Variable)
+
+## thresholds for ref and HB channels
+refT <- 0.79
+hbT <- 0.67
+
+DF1 <- DF %>%
+  filter(Smooths %in% c(3,6),
+         Quant %in% c(0.9,0.5,0.3))
+
+head(DF1)
+
+  for(m in 1:length(mets)) {
+
+    T1 <- ggplot() +
+      geom_smooth(data = subset(DF1, Variable == mets[m]), aes(y=predictedVals, x=deltah_final, col = Quant), linewidth = 1)+
+      # geom_point(data = ptsbiox, aes(x=deltah_final, y = MetricValue,
+      #                                col = channel_engineering_class)) +
+      # stat_smooth(method = "lm", formula = y ~ x + I(x^2), linewidth = 1)+
+      geom_hline(yintercept = refT,  linetype="dashed", linewidth=0.5, color = "grey50") +
+      geom_hline(yintercept = hbT,  linetype="dashed", linewidth=0.5, color = "red") +
+      geom_vline(xintercept = 0) +
+      facet_wrap(~Smooths, scales = "free") +
+      scale_x_continuous(name=paste(mets[m])) +
+      scale_y_continuous(name = paste0("Index Score (CSCI)"))
+    
+    
+    # theme(legend.position = "none"))
+    
+    T1
+    
+    file.name1 <- paste0(out.dir, "04_CSCI_", mets[m], "_flow_response_predicted_gam_combined_all_quants_updatedSites_simple.jpg")
+    ggsave(T1, filename=file.name1, dpi=300, height=5, width=7.5)
+    
+  }
+  
+  
+  
+  
+
+
 # load(file = "ignore/04_quantGams_smooths_predictions_noPeakAugs.RData")
 str(DF)
 
@@ -278,13 +347,13 @@ mets <- unique(DF$Variable)
 mets
 bio
 
-b=2
+b=1
 m=1
 ### take the assigned K from script 05, just csci and DS baseflow, only 0.5 & 0.9 
 
 ## filter to index and only 
 DF1 <- DF %>%
-  filter(Metric == bio[b], Quant %in% c(0.5, 0.9), Smooths == 6)
+  filter(Metric == bio[b], Quant %in% c( 0.3, 0.5, 0.9), Smooths == 6)
 
 ## thresholds
 refT <- 0.79
@@ -315,7 +384,7 @@ T1 <- ggplot() +
 
 T1
 
-file.name1 <- paste0(out.dir, "04_", bio[b], "_", mets[m], "_DS_baseflow_example_noPeakAugs.jpg")
+file.name1 <- paste0(out.dir, "04_", bio[b], "_", mets[m], "_DS_baseflow_example_updatedSites.jpg")
 ggsave(T1, filename=file.name1, dpi=300, height=5, width=7.5)
 
 

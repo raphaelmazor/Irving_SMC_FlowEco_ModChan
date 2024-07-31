@@ -1,7 +1,7 @@
 library(tidylog)
 library(tidyverse)
 library(sf)
-library(mapview)
+# library(mapview)
 
 out.dir <- "/Users/katieirving/OneDrive - SCCWRP/Documents - Katie’s MacBook Pro/git/SMC_Modified_Channels/final_figures/"
 
@@ -11,15 +11,16 @@ getwd()
 # Flow data ---------------------------------------------------------------
 
 ## upload data
-dh_data <- read.csv("ignore/2023-07-20_RFpred_output_alldata_biositesCOMIDs_med_dlt_FFM_test12_test2.csv")
+dh_data <- read.csv("ignore/2024-07-26_RFpred_output_alldata_chan.engCOMIDs_med_dlt_FFM_test12_test2.csv")
 head(dh_data)
 
 ## pivot longer
 dh_median <- dh_data %>%
   pivot_longer(d_ds_mag_50:delta_q99, names_to = "flow_metric", values_to = "deltah_final") 
 
-dim(dh_median) # 2943
+dim(dh_median) # 13329
 head(dh_median)
+str(dh_median)
 
 ## full names for FFM labels
 labels <- read.csv("input_data/ffm_names.csv")
@@ -48,7 +49,7 @@ labels
 
 flowSites <- unique(dh_median$masterid)
 
-flowSites ## 479
+length(flowSites) ## 1149
 
 ## channel engineering data
 
@@ -90,17 +91,16 @@ head(alg_tax_ca)
 # Join bio and flow -------------------------------------------------------
 
 ## how many flow in bug sites
-sum(flowSites %in% bug_tax_ca$masterid) ## 472
+sum(flowSites %in% bug_tax_ca$masterid) ## 982
 
-sum(flowSites %in% alg_tax_ca$masterid) ## 354
-
+sum(flowSites %in% alg_tax_ca$masterid) ## 722
 
 ## filter bug data using masterid ### remove reps format date
 csciScores <- bug_tax_ca %>%
   filter(fieldreplicate == 1 ) %>%
   mutate(Metric = "csci", csci = as.numeric(csci)) %>%
-  rename(MetricValue = csci, COMID = comid) %>%
-  select(masterid, sampleyear, Metric, MetricValue, longitude, latitude, COMID)
+  rename(MetricValue = csci) %>%
+  select(masterid, sampleyear, Metric, MetricValue, longitude, latitude, comid)
 
 length(unique(csciScores$masterid)) ## 4413 sites (all ca)
 
@@ -112,9 +112,9 @@ asciScores <- alg_tax_ca %>%
   separate(sampledate, into = c("sampleyear", "Month", "Day"), sep= "-", remove = F) %>%
   mutate(sampleyear = as.numeric(sampleyear))  %>%
   mutate(Metric = "asci") %>%
-  rename(MetricValue = result, COMID = comid) %>%
+  rename(MetricValue = result) %>%
   mutate(MetricValue = as.numeric(MetricValue)) %>%
-  select(masterid, sampleyear, Metric, MetricValue, longitude, latitude,  COMID)
+  select(masterid, sampleyear, Metric, MetricValue, longitude, latitude,  comid)
 
 
 str(asciScores)
@@ -131,7 +131,9 @@ scoresSites <- bind_rows(asciScores, csciScores)
 sum(is.na(scoresSites$Metric))
 
 ## join channel class to bio sites
-engsites <- left_join(scoresSites, BioEng, by = "masterid")
+engsites <- left_join(scoresSites, BioEng, by = "masterid") %>%
+  mutate(comid = as.integer(comid))
+  
 engsites
 
 length(unique(engsites$masterid)) ## 4427
@@ -170,7 +172,10 @@ tallyFFM
 
 ## join all data
 
-AllData <- right_join(engsites, dh_median, by = c("masterid", "longitude", "latitude"), relationship = "many-to-many") %>%
+names(dh_median)
+names(engsites)
+
+AllData <- right_join(engsites, dh_median, by = c("masterid", "comid", "channel_engineering_class"), relationship = "many-to-many") %>%
           left_join( labels, by = "flow_metric")
 
 AllData

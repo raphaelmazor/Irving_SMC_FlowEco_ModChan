@@ -2,7 +2,7 @@
 
 library(tidyverse)
 library(sf)
-library(mapview)
+# library(mapview)
 library(tidylog)
 
 ## directory for figures

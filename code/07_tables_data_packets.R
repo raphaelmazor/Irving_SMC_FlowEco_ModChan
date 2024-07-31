@@ -10,64 +10,80 @@ library(tidylog)
 ## within limits doc
 imps <- read.csv("ignore/05_impact_ffm_bio.csv") %>%
   select( -X)
-
+unique(imps$Threshold)
 ## for now remove natlow,med,high
-removes <- unique(imps$Threshold)[c(1,5,7)]
+removes <- unique(imps$Threshold)[c(2,3,4)]
 imps <- imps %>%
   filter(!Threshold %in% removes)
 
 imps
+
+## upload ffm for min/max values
+load(file = "final_data/01_bugs_algae_flow_joined_by_masterid.RData")
+head(AllData)
+
+## calculate min/max
+ffms <- AllData %>%
+  select(Flow.Metric.Name, deltah_final) %>%
+  drop_na() %>%
+  group_by(Flow.Metric.Name) %>%
+  summarise(MaxDelta = max(deltah_final),
+            MinDelta = min(deltah_final))
+  
+
+ffms
 
 # Ranges ------------------------------------------------------------------
 
 ## upload, remove asci and stanard thresholds
 ranges <- read.csv("final_data/05_ffm_ranges.csv") %>%
   filter(!Threshold %in% removes, Index == "csci") %>%
-  dplyr::select(-c(X, masterid, Index)) %>%
+  dplyr::select(-c(X, masterid, Index, Threshold)) %>%
   distinct() 
 
+ranges
 ## change min/max sub values to associated min/max of metric
 
-# Flow.Metric.Name                  `max(deltah_final)` `min(deltah_final)`
-# <chr>                                           <dbl>               <dbl>
-#   1 10-year flood magnitude                        -1.55             -19120. 
-# 2 2-year flood magnitude                         -5.01              -7944. 
-# 3 5-year flood magnitude                         -1.54             -18874. 
-# 4 Dry-season median baseflow                     94.6                 -26.9
-# 5 Fall pulse magnitude                          922.                 -227. 
-# 6 Magnitude of largest annual storm              -0.701            -44934. 
-# 7 Spring recession magnitude                   1700.                -1050. 
-# 8 Wet-season low baseflow                        74.6                 -89.2
-# 9 Wet-season median baseflow                    205.                 -368. 
+# Flow.Metric.Name                  MaxDelta MinDelta
+# <chr>                                <dbl>    <dbl>
+# 1 10-year flood magnitude             8060.  -25261. 
+# 2 2-year flood magnitude              2334.   -7944. 
+# 3 5-year flood magnitude              5693.  -22147. 
+# 4 Dry-season median baseflow            94.6    -28.7
+# 5 Fall pulse magnitude                 922.    -227. 
+# 6 Magnitude of largest annual storm   1251.  -51409. 
+# 7 Spring recession magnitude          2290.   -1127. 
+# 8 Wet-season low baseflow               74.6    -89.2
+# 9 Wet-season median baseflow           205.    -368. 
 
 ## define values we want to swap
 minVal <- (ranges$Lower2)[1]
 maxVal <- (ranges$Upper2)[1]
 
 ranges2 <- ranges %>%
-  mutate(Lower = case_when(Lower2 == minVal & Flow.Metric.Name == "Spring recession magnitude" ~ -1050.,
-                            Lower2 == minVal & Flow.Metric.Name == "10-year flood magnitude" ~ -19120. ,
+  mutate(Lower = case_when(Lower2 == minVal & Flow.Metric.Name == "Spring recession magnitude" ~ -1127.,
+                            Lower2 == minVal & Flow.Metric.Name == "10-year flood magnitude" ~ -25261. ,
                             Lower2 == minVal & Flow.Metric.Name == "2-year flood magnitude" ~ -7944.,
-                            Lower2 == minVal & Flow.Metric.Name == "5-year flood magnitude" ~ -18874,
-                            Lower2 == minVal & Flow.Metric.Name == "Dry-season median baseflow" ~ -26.9,
+                            Lower2 == minVal & Flow.Metric.Name == "5-year flood magnitude" ~ -22147.,
+                            Lower2 == minVal & Flow.Metric.Name == "Dry-season median baseflow" ~ -28.7,
                             Lower2 == minVal & Flow.Metric.Name == "Fall pulse magnitude" ~ -227.,
-                            # Lower2 == minVal & Flow.Metric.Name == "Magnitude of largest annual storm" ~ 1700.,
+                            Lower2 == minVal & Flow.Metric.Name == "Magnitude of largest annual storm" ~ -51409.,
                             Lower2 == minVal & Flow.Metric.Name == "Wet-season low baseflow" ~ -89.2,
                             Lower2 == minVal & Flow.Metric.Name == "Wet-season median baseflow" ~  -368.)) %>% 
   mutate(Lower = ifelse(is.na(Lower), Lower2, Lower)) %>%
-  mutate(Upper = case_when(Upper2 == maxVal & Flow.Metric.Name == "Spring recession magnitude" ~ 1700,
-                            Upper2 == maxVal & Flow.Metric.Name == "10-year flood magnitude" ~ 0 ,
-                            Upper2 == maxVal & Flow.Metric.Name == "2-year flood magnitude" ~ 0,
-                            Upper2 == maxVal & Flow.Metric.Name == "5-year flood magnitude" ~ 0,
+  mutate(Upper = case_when(Upper2 == maxVal & Flow.Metric.Name == "Spring recession magnitude" ~ 2290,
+                            Upper2 == maxVal & Flow.Metric.Name == "10-year flood magnitude" ~ 8060 ,
+                            Upper2 == maxVal & Flow.Metric.Name == "2-year flood magnitude" ~ 2334.,
+                            Upper2 == maxVal & Flow.Metric.Name == "5-year flood magnitude" ~ 5693,
                             Upper2 == maxVal & Flow.Metric.Name == "Dry-season median baseflow" ~ 94.6,
                             Upper2 == maxVal & Flow.Metric.Name == "Fall pulse magnitude" ~ 922.,
-                            # Upper2 == maxVal & Flow.Metric.Name == "Magnitude of largest annual storm" ~ 1700.,
+                            Upper2 == maxVal & Flow.Metric.Name == "Magnitude of largest annual storm" ~ 1251.,
                             Upper2 == maxVal & Flow.Metric.Name == "Wet-season low baseflow" ~ 74.6,
                             Upper2 == maxVal & Flow.Metric.Name == "Wet-season median baseflow" ~  205)) %>%
   mutate(Upper = ifelse(is.na(Upper), Upper2, Upper)) %>%
   dplyr::select(-Lower2, - Upper2)
 
-ranges
+ranges2
 ## save ranges 
 write.csv(ranges, "final_data/07_ffm_ranges_modified_csci.csv")
 
@@ -78,33 +94,36 @@ ranges_wide <- ranges2 %>%
   mutate(FFMRange = paste0(Lower, " to ", Upper)) %>% ## paste together 
   dplyr::select(-c(Lower, Upper)) %>% ## remove non-combined limits
   pivot_wider(names_from= Quantile, values_from = FFMRange) %>% ## make wide
-  dplyr::select(Threshold:Flow.Metric.Name, "0.5", "0.9") %>% ## change order to be more logical
+  dplyr::select(Threshold:Flow.Metric.Name,"0.3", "0.5", "0.9") %>% ## change order to be more logical
   rename(ModifiedChannelType = Threshold, CSCI.Threshold = BioThresh) %>% ## rename 
   mutate(ModifiedChannelType = factor(ModifiedChannelType, levels = c("NAT", "SB0", "SB2", "HB")))
 
 write.csv(ranges_wide, "final_data/07_ffm_ranges_modified_csci_wide.csv")
 
-
+ranges_wide
 # Format ------------------------------------------------------------------
 
 ## format names
 impsx <- imps %>% 
-  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, COMID, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
+  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, comid, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
   mutate(Threshold = factor(Threshold, levels = c("NAT", "SB0", "SB2", "HB"), 
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom"))) %>%
-  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF") ~ "Healthy Biology",
-                               Result %in% c("UHUF", "UHMF", "UHLF") ~ "Unhealthy Biology")) %>%
+  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF", "HVUF") ~ "Healthy Biology",
+                               Result %in% c("UHUF", "UHMF", "UHLF", "UHVUF") ~ "Unhealthy Biology")) %>%
   mutate(FlowResult = case_when(Result %in% c("HUF", "UHUF") ~ "Unlikely Stressed",
+                                Result %in% c("HVUF", "UHVUF") ~ "Very Unlikely Stressed",
                                 Result %in% c("HMF", "UHMF") ~ "Likely Stressed",
-                                Result %in% c("HLF", "UHLF") ~ "Likely Very Stressed")) %>%
-  mutate(FlowResult = factor(FlowResult, levels = c("Unlikely Stressed", "Likely Stressed", "Likely Very Stressed"))) %>%
-  mutate(Result = factor(Result, levels = c("HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
-                         labels = c("Healthy Biology, Unlikely Stressed",
+                                Result %in% c("HLF", "UHLF") ~ "Very Likely Stressed")) %>%
+  mutate(FlowResult = factor(FlowResult, levels = c("Very Unlikely Stressed", "Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
+  mutate(Result = factor(Result, levels = c("HVUF", "UHVUF", "HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
+                         labels = c("Healthy Biology, Very Unlikely Stressed",
+                                    "Unhealthy Biology, Very Unlikely Stressed",
+                                    "Healthy Biology, Unlikely Stressed",
                                     "Unhealthy Biology, Unlikely Stressed",
                                     "Healthy Biology, Likely Stressed",
                                     "Unhealthy Biology, Likely Stressed",
-                                    "Healthy Biology, Likely Very Stressed",
-                                    "Unhealthy Biology, Likely Very Stressed"))) 
+                                    "Healthy Biology,  Very Likely Stressed",
+                                    "Unhealthy Biology,  Very Likely Stressed")))  
 
 
 
@@ -112,18 +131,21 @@ impsx <- imps %>%
 removes
 ## upload number of ffm strikes 
 strikes <- read.csv("final_data/05_Number_ffm_per_result.csv") %>%
-  filter(!Threshold %in% removes) %>%
+  filter(!Threshold %in% removes) %>% 
   mutate(Threshold = factor(Threshold, levels = c("NAT", "SB0", "SB2", "HB"), 
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom")), 
          NumStrikes = as.factor(n)) %>%
-  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF") ~ "Healthy Biology",
-                               Result %in% c("UHUF", "UHMF", "UHLF") ~ "Unhealthy Biology")) %>%
+  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF", "HVUF") ~ "Healthy Biology",
+                               Result %in% c("UHUF", "UHMF", "UHLF", "UHVUF") ~ "Unhealthy Biology")) %>%
   mutate(FlowResult = case_when(Result %in% c("HUF", "UHUF") ~ "Unlikely Stressed",
+                                Result %in% c("HVUF", "UHVUF") ~ "Very Unlikely Stressed",
                                 Result %in% c("HMF", "UHMF") ~ "Likely Stressed",
                                 Result %in% c("HLF", "UHLF") ~ "Very Likely Stressed")) %>%
-  mutate(FlowResult = factor(FlowResult, levels = c("Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
-  mutate(Result = factor(Result, levels = c("HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
-                         labels = c("Healthy Biology, Unlikely Stressed",
+  mutate(FlowResult = factor(FlowResult, levels = c("Very Unlikely Stressed", "Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
+  mutate(Result = factor(Result, levels = c("HVUF", "UHVUF", "HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
+                         labels = c("Healthy Biology, Very Unlikely Stressed",
+                                    "Unhealthy Biology, Very Unlikely Stressed",
+                                    "Healthy Biology, Unlikely Stressed",
                                     "Unhealthy Biology, Unlikely Stressed",
                                     "Healthy Biology, Likely Stressed",
                                     "Unhealthy Biology, Likely Stressed",
@@ -132,12 +154,10 @@ strikes <- read.csv("final_data/05_Number_ffm_per_result.csv") %>%
 
 # FFm and bio values ------------------------------------------------------
 
-load(file = "final_data/03_bugs_algae_flow_joined_by_masterid_noPeakAugs.RData") 
-AllDataLongx
 
 ## get sites with flow data
-AllData <- AllDataLongx %>%
-  dplyr::select(-c( longitude, latitude, COMID, comid, flow_metric, Class2, hydro.endpoints, Flow.Component)) %>% ## remove redundant columns
+AllDatax <- AllData %>%
+  dplyr::select(-c( longitude, latitude, comid, flow_metric, Class2, hydro.endpoints, Flow.Component)) %>% ## remove redundant columns
   distinct() %>%
   drop_na(deltah_final) %>% ## remove sites with no FFM
   rename(Metric.Score = MetricValue, Modified.Class = channel_engineering_class, 
@@ -147,7 +167,7 @@ AllData <- AllDataLongx %>%
   drop_na(Modified.Class) ## remove sites with no classification
   
 ## take max of scores with more than one value
-AllData2 <- AllData %>%
+AllData2 <- AllDatax %>%
   group_by(masterid, sampleyear) %>% ## group by site and year
   mutate(Metric.Score2 = max(Metric.Score)) %>% ## get max score
   dplyr::select(-Metric.Score) %>% ## remove orriginal score
@@ -156,14 +176,14 @@ AllData2 <- AllData %>%
                 "Dry-season median baseflow":"Magnitude of largest annual storm") %>% ## change order of columns
   rename(CSCI.Score = Metric.Score2) #%>% ## rename metric score
   # pivot_longer("Dry-season median baseflow":"Magnitude of largest annual storm", names_to = "Flow.Metric.Name", values_to = "Flow.Metric.Value")
-
+view(AllData2)
 
 head(AllData2)
 names(AllData2)
 ## get list of sites
 
 sites <- unique(AllData2$masterid)
-sites
+sites ## 359
 
 ## upload bio sites shape to get spatial info
 
@@ -187,15 +207,17 @@ ffm_bio_tab <- full_join(bio_sf_sub, AllData2) %>%
   pivot_longer("Dry-season median baseflow":"Magnitude of largest annual storm", names_to = "Flow.Metric.Name", values_to = "Change_in_Flow.Metric_Value_(cfs)")
 
 head(ffm_bio_tab)
-
+view(ffm_bio_tab)
 
 # Add flow alteration stress ----------------------------------------------
 
 head(impsx)
+
+unique(impsx$Threshold)
 ## format data for join
 imps1 <- impsx %>%
   filter(Index == "csci") %>%
-  dplyr::select(-c(Index, Hydro_endpoint, COMID, Flow.Component, longitude, latitude, Result)) %>% ## remove redundant columns
+  dplyr::select(-c(Index, Hydro_endpoint, comid, Flow.Component, longitude, latitude, Result)) %>% ## remove redundant columns
   # mutate(Flow.Metric.Name = paste0(Flow.Metric.Name, " Stress Level")) %>%
   distinct() #%>%
   # pivot_wider(names_from = Flow.Metric.Name, values_from = FlowResult)
@@ -227,10 +249,10 @@ infoTable <- ffm_bio_stress_tab %>%
 
 names(infoTable)
 head(infoTable)
-
+view(infoTable)
 write.csv(infoTable, "final_data/07_ffm_bio_stresLevel_data_packet_all_counties.csv")
 
-length(unique(infoTable$masterid)) ## 132
+length(unique(infoTable$masterid)) ## 341
 
 unique(infoTable$county)
 
@@ -243,11 +265,13 @@ ranges_wide <- ranges_wide %>%
   dplyr::select(-ModifiedChannelType)
 
 names(ranges_wide)
+view(ranges_wide)
 ## join to clean table
 
 infoTablex <- full_join(infoTable, ranges_wide, by = c("CSCI.Threshold", "Flow.Metric.Name", "Modified.Class")) %>%
-  dplyr::select(masterid:CSCI.Level, "0.5", "0.9", "Flow.Alteration.Stress")
+  dplyr::select(masterid:CSCI.Level,"0.3", "0.5", "0.9", "Flow.Alteration.Stress")
 
+view(infoTablex)
 
 names(infoTablex)
 

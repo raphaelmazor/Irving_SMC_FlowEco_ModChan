@@ -35,13 +35,13 @@ peakmets
 
 ## assign which to be removed
 AllDataLongA <- AllDataLong2 %>%
-  dplyr::select(-X) %>%
+  # dplyr::select(-X) %>%
   distinct() %>%
   drop_na(deltah_final) %>%
   mutate(PeakAug = ifelse(flow_metric %in% peakmets & deltah_final > 0, "Yes", "No"))
 
 ## how many bio sites 
-length(unique(AllDataLongA$masterid)) ## 187
+length(unique(AllDataLongA$masterid)) ## 187, 364
 
 ## count number of sites with augmnented peaks
 talTest <- AllDataLongA %>%

@@ -20,11 +20,12 @@ out.dir <- "final_figures/"
 imps <- read.csv("ignore/05_impact_ffm_bio.csv") %>%
   select( -X)
 
+unique(imps$Result)
 ## remove all but nat med
 
 imps <- imps %>%
   filter(Threshold == "NATMed")
-  
+  view(imps)
 ## add eng data
 ## upload
 BioEng <- read.csv("ignore/02_chan_eng.csv") %>% ## upload data
@@ -72,7 +73,7 @@ FinalTablex <- tal %>%
                                    (ModifiedClass == "SB0") ~ "Soft Bottom (no hard sides)",
                                    (ModifiedClass == "SB2") ~ "Soft Bottom (two hard sides)"))
 FinalTablex    
-
+unique(FinalTablex$Impact)
 ## get total sites 
 sums <- FinalTablex %>%
   group_by(Index, FlowMetric, ModifiedClass) %>%
@@ -138,22 +139,25 @@ FinalTableWide <- FinalTablex %>%
   
 ## format names
 impsx <- imps2 %>% 
-  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, COMID, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
+  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, comid, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
   mutate(Threshold = factor(Threshold, levels = c("NAT", "SB0", "SB2", "HB"), 
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom"))) %>%
-  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF") ~ "Healthy Biology",
-                               Result %in% c("UHUF", "UHMF", "UHLF") ~ "Unhealthy Biology")) %>%
+  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF", "HVUF") ~ "Healthy Biology",
+                               Result %in% c("UHUF", "UHMF", "UHLF", "UHVUF") ~ "Unhealthy Biology")) %>%
   mutate(FlowResult = case_when(Result %in% c("HUF", "UHUF") ~ "Unlikely Stressed",
+                                Result %in% c("HVUF", "UHVUF") ~ "Very Unlikely Stressed",
                                 Result %in% c("HMF", "UHMF") ~ "Likely Stressed",
                                 Result %in% c("HLF", "UHLF") ~ "Very Likely Stressed")) %>%
-  mutate(FlowResult = factor(FlowResult, levels = c("Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
-  mutate(Result = factor(Result, levels = c("HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
-                         labels = c("Healthy Biology, Unlikely Stressed",
+  mutate(FlowResult = factor(FlowResult, levels = c("Very Unlikely Stressed", "Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
+  mutate(Result = factor(Result, levels = c("HVUF", "UHVUF", "HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
+                         labels = c("Healthy Biology, Very Unlikely Stressed",
+                                    "Unhealthy Biology, Very Unlikely Stressed",
+                                    "Healthy Biology, Unlikely Stressed",
                                     "Unhealthy Biology, Unlikely Stressed",
-                                     "Healthy Biology, Likely Stressed",
+                                    "Healthy Biology, Likely Stressed",
                                     "Unhealthy Biology, Likely Stressed",
-                                     "Healthy Biology,  Very Likely Stressed",
-                                    "Unhealthy Biology,  Very Likely Stressed"))) 
+                                    "Healthy Biology,  Very Likely Stressed",
+                                    "Unhealthy Biology,  Very Likely Stressed")))  
 
 
 ## make spatial
@@ -312,18 +316,21 @@ strikes2<- left_join(strikes, BioEng, by = "masterid") %>%
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom")), 
          NumStrikes = as.factor(n)) %>%
   mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF") ~ "Healthy Biology",
-                               Result %in% c("UHUF", "UHMF", "UHLF") ~ "Unhealthy Biology")) %>%
+                               Result %in% c("UHUF", "UHMF", "UHLF", "UHVUF") ~ "Unhealthy Biology")) %>%
   mutate(FlowResult = case_when(Result %in% c("HUF", "UHUF") ~ "Unlikely Stressed",
+                                Result %in% c("HVUF", "UHVUF") ~ "Very Unlikely Stressed",
                                 Result %in% c("HMF", "UHMF") ~ "Likely Stressed",
                                 Result %in% c("HLF", "UHLF") ~ "Very Likely Stressed")) %>%
-  mutate(FlowResult = factor(FlowResult, levels = c("Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
-  mutate(Result = factor(Result, levels = c("HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
-                         labels = c("Healthy Biology, Unlikely Stressed",
+  mutate(FlowResult = factor(FlowResult, levels = c("Very Unlikely Stressed", "Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
+  mutate(Result = factor(Result, levels = c("HVUF", "UHVUF", "HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
+                         labels = c("Healthy Biology, Very Unlikely Stressed",
+                                    "Unhealthy Biology, Very Unlikely Stressed",
+                                    "Healthy Biology, Unlikely Stressed",
                                     "Unhealthy Biology, Unlikely Stressed",
                                     "Healthy Biology, Likely Stressed",
                                     "Unhealthy Biology, Likely Stressed",
                                     "Healthy Biology,  Very Likely Stressed",
-                                    "Unhealthy Biology,  Very Likely Stressed"))) 
+                                    "Unhealthy Biology,  Very Likely Stressed")))
 
 head(strikes2)
 
@@ -338,11 +345,11 @@ boxData2 <- strikes2 %>%
 
 head(boxData)
 
-T1 <- (ggplot(boxData,  aes(x=Threshold, y=AllStress, fill = Threshold)) +
+T1 <- (ggplot(boxData2,  aes(x=Threshold, y=AllStress, fill = Threshold)) +
          geom_boxplot() +
          scale_x_discrete(name = "") +
          scale_fill_manual(values=c("chartreuse4", "dodgerblue2", "mediumpurple2", "firebrick3"))+ ## colour of boxes
-         scale_y_continuous(name = "Number of FFM"))
+         scale_y_continuous(name = "Number of FFM", breaks = scales::pretty_breaks(9)))
 
 
 T1
@@ -368,13 +375,15 @@ tallyImpactx <- tal %>%
                                     "Healthy Biology, Likely Stressed", "Unhealthy Biology, Likely Stressed",
                                       "Healthy Biology, Very Likely Stressed","Unhealthy Biology, Very Likely Stressed")))
 
-catPal <- c("lightblue3", "lightpink3", "dodgerblue1", "red1",  "darkred") ## no healthy bio, very likely stressed
+
+catPal <- c("lightblue3", "lightpink3","dodgerblue", "red1",  "darkred") 
 
 
 a1 <- ggplot(tallyImpactx, aes(fill=Result, y=PercChans, x=ModifiedClass)) + 
   geom_bar(position="stack", stat="identity") +
   facet_wrap(~Flow.Metric.Name) +
   scale_fill_manual(values=catPal)+
+  scale_x_discrete(name = "") +
   scale_y_continuous(name = "Sites (%)")
 
 a1
@@ -394,6 +403,7 @@ a2 <- ggplot(dryTally, aes(fill=Result, y=PercChans, x=ModifiedClass)) +
   geom_bar(position="stack", stat="identity") +
   # facet_wrap(~Flow.Metric.Name) +
   scale_fill_manual(values=catPal)+
+  scale_x_discrete(name = "") +
   scale_y_continuous(name = "Sites (%)")
 
 a2
@@ -412,6 +422,7 @@ a3 <- ggplot(wetTally, aes(fill=Result, y=PercChans, x=ModifiedClass)) +
   geom_bar(position="stack", stat="identity") +
   # facet_wrap(~Flow.Metric.Name) +
   scale_fill_manual(values=catPal)+
+  scale_x_discrete(name = "") +
   scale_y_continuous(name = "Sites (%)")
 
 a3
@@ -431,6 +442,7 @@ a4 <- ggplot(peakTally, aes(fill=Result, y=PercChans, x=ModifiedClass)) +
   geom_bar(position="stack", stat="identity") +
   facet_wrap(~Flow.Metric.Name) +
   scale_fill_manual(values=catPal)+
+  scale_x_discrete(name = "") +
   scale_y_continuous(name = "Sites (%)")
 
 a4
