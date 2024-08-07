@@ -1,6 +1,7 @@
-library(tidylog)
+
 library(tidyverse)
 library(sf)
+library(tidylog)
 # library(mapview)
 
 out.dir <- "/Users/katieirving/OneDrive - SCCWRP/Documents - Katie’s MacBook Pro/git/SMC_Modified_Channels/final_figures/"
@@ -16,7 +17,8 @@ head(dh_data)
 
 ## pivot longer
 dh_median <- dh_data %>%
-  pivot_longer(d_ds_mag_50:delta_q99, names_to = "flow_metric", values_to = "deltah_final") 
+  pivot_longer(d_ds_mag_50:delta_q99, names_to = "flow_metric", values_to = "deltah_final") %>%
+  mutate(comid = as.character(comid))
 
 dim(dh_median) # 13329
 head(dh_median)
@@ -44,7 +46,6 @@ labels <- labels %>%
                                  hydro.endpoints == "Q99" ~ "delta_q99")) %>%
   drop_na(flow_metric)
 
-labels
 ## count sites with flow data
 
 flowSites <- unique(dh_median$masterid)
@@ -53,11 +54,12 @@ length(flowSites) ## 1149
 
 ## channel engineering data
 
-BioEng <- read.csv("ignore/02_chan_eng.csv") %>% ## upload data
-  select(-c(X,channel_engineering_classification_date, channel_engineering_personnel, channel_engineering_comments)) %>% ## remove redundant columns
-  mutate(Class2 = ifelse(channel_engineering_class =="NAT", "Natural", "Modified")) ## add overall modification class
+BioEng <- read.csv("ignore/Chan_eng_all_SMC.csv") %>% ## upload data
+  # select(-c(X,channel_engineering_classification_date, channel_engineering_personnel, channel_engineering_comments)) %>% ## remove redundant columns
+  mutate(Class2 = ifelse(channel_engineering_class =="NAT", "Natural", "Modified")) %>% ## add overall modification class
+  mutate(comid = as.character(comid))
 
-BioEng
+head(BioEng)
 
 ## count number of sites per class
 tallyFFMClass <- BioEng %>%
@@ -73,27 +75,18 @@ tallyFFMClass
 
 ##  upload all sites
 
-bioSites <- st_read("ignore/01_bio_sites_all.shp")
-head(bioSites)
-dim(bioSites)
-
 ## bugs data
-load(file = "ignore/SMC_csci_cali_Mar2023_v2.RData")
+load(file = "ignore/CSCI_CA_Aug2024.RData")
+dim(csci)
+bug_tax_ca <- csci
 
-# csciScores <- read.csv("ignore/01_csci_comp_mets_comid_socal.csv")
 head(bug_tax_ca)
-
-### algae scores
-load(file="ignore/SMC_asci_cali_Mar2023_v3.RData")
-head(alg_tax_ca)
-# asciScores <- read.csv("ignore/01_asci_comp_mets_comid_socal.csv")
 
 # Join bio and flow -------------------------------------------------------
 
 ## how many flow in bug sites
-sum(flowSites %in% bug_tax_ca$masterid) ## 982
+sum(flowSites %in% bug_tax_ca$masterid) ## 1073
 
-sum(flowSites %in% alg_tax_ca$masterid) ## 722
 
 ## filter bug data using masterid ### remove reps format date
 csciScores <- bug_tax_ca %>%
@@ -102,41 +95,18 @@ csciScores <- bug_tax_ca %>%
   rename(MetricValue = csci) %>%
   select(masterid, sampleyear, Metric, MetricValue, longitude, latitude, comid)
 
-length(unique(csciScores$masterid)) ## 4413 sites (all ca)
-
-
-## filter bug data using masterid ### remove reps, format date and data
-asciScores <- alg_tax_ca %>%
-  filter(replicate == 1 ) %>%
-  separate(sampledate, into = c("sampledate", "Time"), sep= " ", remove = F) %>%
-  separate(sampledate, into = c("sampleyear", "Month", "Day"), sep= "-", remove = F) %>%
-  mutate(sampleyear = as.numeric(sampleyear))  %>%
-  mutate(Metric = "asci") %>%
-  rename(MetricValue = result) %>%
-  mutate(MetricValue = as.numeric(MetricValue)) %>%
-  select(masterid, sampleyear, Metric, MetricValue, longitude, latitude,  comid)
-
-
-str(asciScores)
-length(unique(asciScores$masterid)) ## 2306 sites 
-
-## check names to join
-names(asciScores)
-names(csciScores)
+length(unique(csciScores$masterid)) ## 5729 sites (all ca)
+str(csciScores)
 
 # Join bio sites to flow data ---------------------------------------------
 
-## join asci and csci
-scoresSites <- bind_rows(asciScores, csciScores)
-sum(is.na(scoresSites$Metric))
-
 ## join channel class to bio sites
-engsites <- left_join(scoresSites, BioEng, by = "masterid") %>%
-  mutate(comid = as.integer(comid))
+engsites <- left_join(csciScores, BioEng, by = c("masterid", "comid"), relationship = "many-to-many") #%>%
+  # mutate(comid = as.integer(comid))
   
 engsites
 
-length(unique(engsites$masterid)) ## 4427
+length(unique(engsites$masterid)) ## 5729
 sum(is.na(engsites$Metric))
 
 ## count asci csci by class 
@@ -158,7 +128,7 @@ flowsites
 ## join to channel class
 AllData1 <- full_join(engsites, flowsites, by = c("masterid"), relationship = "many-to-many") %>%
   mutate(HasFFM = replace_na(HasFFM, "No")) ## replace NAs with No (no ffm)
-AllData1 
+head(AllData1)
 
 ## count FFM per channel class
 
@@ -172,11 +142,14 @@ tallyFFM
 
 ## join all data
 
-names(dh_median)
+names(dh_median) %in% names(engsites)
+dim(dh_median)
+
 names(engsites)
 
-AllData <- right_join(engsites, dh_median, by = c("masterid", "comid", "channel_engineering_class"), relationship = "many-to-many") %>%
-          left_join( labels, by = "flow_metric")
+AllData <- right_join(engsites, dh_median, by = c("masterid", "comid", "channel_engineering_class", "huc", "county", "smcshed"), relationship = "many-to-many") %>%
+          left_join( labels, by = "flow_metric") %>%
+  drop_na(deltah_final)
 
 AllData
 

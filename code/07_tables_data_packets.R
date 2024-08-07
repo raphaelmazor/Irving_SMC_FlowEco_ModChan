@@ -38,7 +38,7 @@ ffms
 ## upload, remove asci and stanard thresholds
 ranges <- read.csv("final_data/05_ffm_ranges.csv") %>%
   filter(!Threshold %in% removes, Index == "csci") %>%
-  dplyr::select(-c(X, masterid, Index, Threshold)) %>%
+  dplyr::select(-c(X, masterid, Index)) %>%
   distinct() 
 
 ranges
@@ -176,24 +176,26 @@ AllData2 <- AllDatax %>%
                 "Dry-season median baseflow":"Magnitude of largest annual storm") %>% ## change order of columns
   rename(CSCI.Score = Metric.Score2) #%>% ## rename metric score
   # pivot_longer("Dry-season median baseflow":"Magnitude of largest annual storm", names_to = "Flow.Metric.Name", values_to = "Flow.Metric.Value")
-view(AllData2)
+# view(AllData2)
 
 head(AllData2)
 names(AllData2)
 ## get list of sites
 
 sites <- unique(AllData2$masterid)
-sites ## 359
+sites ## 393
 
 ## upload bio sites shape to get spatial info
 
-bio_sf <- st_read("ignore/01_bio_sites_all.shp")
-bio_sf
+# bio_sf <- st_read("ignore/01_bio_sites_all.shp")
+# bio_sf
 
+load(file = "ignore/CSCI_CA_Aug2024.RData")
+csci
 ## subset all sites to sites in model
 
-bio_sf_sub <- bio_sf %>%
-  filter(masterid %in% sites) %>%
+bio_sf_sub <-csci %>%
+  filter(masterid %in% sites) #%>%
   as.data.frame() %>% ## make into df
   dplyr::select(-geometry)
 
@@ -207,7 +209,7 @@ ffm_bio_tab <- full_join(bio_sf_sub, AllData2) %>%
   pivot_longer("Dry-season median baseflow":"Magnitude of largest annual storm", names_to = "Flow.Metric.Name", values_to = "Change_in_Flow.Metric_Value_(cfs)")
 
 head(ffm_bio_tab)
-view(ffm_bio_tab)
+# view(ffm_bio_tab)
 
 # Add flow alteration stress ----------------------------------------------
 
@@ -244,15 +246,16 @@ infoTable <- ffm_bio_stress_tab %>%
   mutate(RecentYear = max(sampleyear)) %>%
   mutate(YearKeep = ifelse(sampleyear == RecentYear, "Yes", "No")) %>%
   filter(YearKeep == "Yes") %>%
-  dplyr::select(-c(RecentYear, YearKeep, COMID, COMID1)) %>%
-  drop_na(Modified.Class, "Change_in_Flow.Metric_Value_(cfs)")
+  dplyr::select(-c(RecentYear, YearKeep, comid)) %>%
+  drop_na(Modified.Class, "Change_in_Flow.Metric_Value_(cfs)") %>%
+  filter(!Flow.Alteration.Stress == "Very Unlikely Stressed")
 
 names(infoTable)
 head(infoTable)
 view(infoTable)
 write.csv(infoTable, "final_data/07_ffm_bio_stresLevel_data_packet_all_counties.csv")
 
-length(unique(infoTable$masterid)) ## 341
+length(unique(infoTable$masterid)) ## 376
 
 unique(infoTable$county)
 
@@ -262,16 +265,16 @@ unique(infoTable$county)
 ranges_wide <- ranges_wide %>%
   mutate(Modified.Class = factor(ModifiedChannelType, levels = c("NAT", "SB0", "SB2", "HB"), 
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom"))) %>%
-  dplyr::select(-ModifiedChannelType)
+  dplyr::select(-ModifiedChannelType) 
 
 names(ranges_wide)
-view(ranges_wide)
+# view(ranges_wide)
 ## join to clean table
 
 infoTablex <- full_join(infoTable, ranges_wide, by = c("CSCI.Threshold", "Flow.Metric.Name", "Modified.Class")) %>%
   dplyr::select(masterid:CSCI.Level,"0.3", "0.5", "0.9", "Flow.Alteration.Stress")
 
-view(infoTablex)
+# view(infoTablex)
 
 names(infoTablex)
 

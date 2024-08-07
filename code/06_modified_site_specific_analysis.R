@@ -224,6 +224,7 @@ imps_sf
   }
   
 }
+
 getwd()
 # Plot per flow metric and channel type
 
@@ -322,7 +323,7 @@ T1 <- (ggplot(boxData,  aes(x=Threshold, y=AllStress, fill = Threshold)) +
          geom_boxplot() +
          scale_x_discrete(name = "") +
          scale_fill_manual(values=c("chartreuse4", "dodgerblue2", "mediumpurple2", "firebrick3"))+ ## colour of boxes
-         scale_y_continuous(name = "Number of FFM", breaks = scales::pretty_breaks(9)))
+         scale_y_continuous(name = "Number of FFM", breaks = scales::pretty_breaks(9), limits = c(0,9)))
 
 T1
 
@@ -353,8 +354,8 @@ tallyImpactx <- tal %>%
   
 tallyImpactx
 
-catPal <- c("pink1","lightblue3", "lightpink3","dodgerblue", "red1",  "royalblue3",  "darkred")
 
+catPal <- c("lightcyan1", "mistyrose1" ,"lightblue3", "lightpink3","dodgerblue", "red1", "blue", "darkred") 
 
 a1 <- ggplot(tallyImpactx, aes(fill=Result, y=PercChans, x=ModifiedClass)) + 
   geom_bar(position="stack", stat="identity") +
@@ -375,6 +376,10 @@ dryTally <- tallyImpactx %>%
   filter(Flow.Metric.Name == "Dry-season median baseflow")
 
 dryTally
+
+# catPal <- c("pink1","lightblue3", "lightpink3","dodgerblue", "red1",  "darkred") ## need to automate this!!!!!!
+catPal <- c( "mistyrose1" ,"lightblue3", "lightpink3","dodgerblue", "red1", "blue", "darkred") 
+
 
 a2 <- ggplot(dryTally, aes(fill=Result, y=PercChans, x=ModifiedClass)) + 
   geom_bar(position="stack", stat="identity") +

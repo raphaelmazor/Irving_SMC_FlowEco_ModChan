@@ -266,7 +266,8 @@ for(b in 1:length(bio)) {
     T1 <- ggplot() +
       geom_smooth(data = subset(DF1, Variable == mets[m]), aes(y=predictedVals, x=deltah_final, col = Quant), linewidth = 1)+
       geom_point(data = ptsbiox, aes(x=deltah_final, y = MetricValue,
-                                     col = channel_engineering_class)) +
+                                     col = channel_engineering_class,
+                                     size=0.5)) +
       # stat_smooth(method = "lm", formula = y ~ x + I(x^2), linewidth = 1)+
       geom_hline(yintercept = refT,  linetype="dashed", linewidth=0.5, color = "grey50") +
       geom_hline(yintercept = hbT,  linetype="dashed", linewidth=0.5, color = "red") +
@@ -334,9 +335,6 @@ head(DF1)
   }
   
   
-  
-  
-
 
 # load(file = "ignore/04_quantGams_smooths_predictions_noPeakAugs.RData")
 str(DF)

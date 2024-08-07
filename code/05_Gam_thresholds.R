@@ -1,6 +1,5 @@
 ## get GAM thresholds
 
-
 library(gam)
 library(tidyverse)
 library(sf)
@@ -130,7 +129,6 @@ for(i in 1: length(metrics)) {
   df[i, 19] <- hydroxx$Smooths[1]
   df[i, 20] <- paste(hydroxx$Quant[1])
 
-  
   
 }
 
@@ -281,7 +279,7 @@ AllDataLong2 <- AllDataLongx %>%
          Threshold = channel_engineering_class,
          IndexValue = MetricValue)
 
-AllDataLong2
+head(AllDataLong2)
 
 ### sep df for overall thresholds - nat low/high
 
@@ -291,6 +289,7 @@ AllDataLongOverall <- AllDataLong2 %>%
   pivot_longer(ThresholdNatLow:ThresholdNatHigh, names_to = "Check", values_to = "Threshold") %>%
   select(-Check) 
 
+AllDataLongOverall
 ## join categorised and overall dfs together
 
 AllDF <- bind_rows(AllDataLongOverall, AllDataLong2) %>% distinct()
@@ -433,11 +432,13 @@ unique(impsx$masterid)
 
 ## count number of FFM that are in UHLF per site
 
-strikes <- impsx %>%
+strikes <- imps %>%
   select(masterid, Threshold, Index, Hydro_endpoint, Result) %>%
   group_by(masterid, Threshold, Index, Result) %>%
   distinct() %>%
   tally()
+
+strikes
 
 write.csv(strikes, "final_data/05_Number_ffm_per_result.csv")
 

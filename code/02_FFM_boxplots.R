@@ -49,3 +49,26 @@ for(m in 1:length(mets)) {
 
 ## jitter plot: height to be 0, unchanges, changed below a therehold, changed above a threshold. delta h limits below critical 
 
+
+# Number of sites per ffm -------------------------------------------------
+
+perFFM <- AllData %>%
+  drop_na(deltah_final) %>%
+  select(masterid, Metric, Flow.Metric.Name) %>%
+  filter(Metric == "csci") %>%
+  distinct() %>%
+  group_by(Metric, Flow.Metric.Name) %>%
+  summarise(NSites = length(unique(masterid)))
+
+perFFM 
+
+
+perEng <- AllData %>%
+  drop_na(deltah_final) %>%
+  select(masterid, Metric, channel_engineering_class) %>%
+  filter(Metric == "csci") %>%
+  distinct() %>%
+  group_by(Metric, channel_engineering_class) %>%
+  summarise(NSites = length(unique(masterid)))
+
+perEng 

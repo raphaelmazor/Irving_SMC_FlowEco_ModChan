@@ -4,6 +4,7 @@
 library(tidyverse)
 library(sf)
 library(tidylog)
+library(scales)
 
 ## directory for figures
 out.dir <- "final_figures/"
@@ -25,7 +26,7 @@ unique(imps$Result)
 
 imps <- imps %>%
   filter(Threshold == "NATMed")
-  view(imps)
+
 ## add eng data
 ## upload
 BioEng <- read.csv("ignore/02_chan_eng.csv") %>% ## upload data
@@ -83,12 +84,13 @@ sums
 
 write.csv(sums, "final_data/06_number_of_sites_standard_class_per_FFM.csv")
 
-  
+str(FinalTable)
+
 ## pivot impact results wider
 FinalTable <- FinalTablex %>%  
   select(-NumberOfSites) %>%
-  pivot_wider(names_from = Impact, values_from = PercentageOfSites) %>%
   drop_na(ModifiedClass) %>%
+  pivot_wider(names_from = Impact, values_from = PercentageOfSites) %>%
   mutate(across(everything(), .fns = ~replace_na(.,0))) %>%
   select(Index:ModifiedClass, HUF, UHUF, HMF, UHMF, HLF, UHLF)
 
@@ -106,8 +108,8 @@ write.csv(FinalTable, "final_data/06_percent_impacts_standard_Class.csv")
 FinalTableWide <- FinalTablex %>%
   select(-NumberOfSites) %>%
   drop_na(ModifiedClass) %>%
-  pivot_wider(names_from = ModifiedClass, values_from = PercentageOfSites) #%>%
-  # mutate(across(everything(), .fns = ~replace_na(.,0))) 
+  pivot_wider(names_from = ModifiedClass, values_from = PercentageOfSites) %>%
+  mutate(across(everything(), .fns = ~replace_na(.,0)))
   # select(-)
   str(FinalTableWide)
 
@@ -305,8 +307,9 @@ strikes <- read.csv("final_data/05_Number_ffm_per_result.csv") %>%
 ## add eng data 
 
 ## upload
-BioEng <- read.csv("ignore/02_chan_eng.csv") %>% ## upload data
-  select(-c(X,channel_engineering_classification_date, channel_engineering_personnel, channel_engineering_comments, Class2)) 
+BioEng <- read.csv("ignore/Chan_eng_all_SMC.csv") %>% 
+  mutate(Class2 = ifelse(channel_engineering_class =="NAT", "Natural", "Modified")) %>% ## add overall modification class
+  mutate(comid = as.character(comid))
 
 ## join to results and format to match
 strikes2<- left_join(strikes, BioEng, by = "masterid") %>%
@@ -343,13 +346,12 @@ boxData2 <- strikes2 %>%
   mutate(across(everything(), .fns = ~replace_na(.,0))) %>% ## NAs to 0
   mutate(AllStress = `Unhealthy Biology, Likely Stressed` + `Unhealthy Biology,  Very Likely Stressed`) ## combine
 
-head(boxData)
 
 T1 <- (ggplot(boxData2,  aes(x=Threshold, y=AllStress, fill = Threshold)) +
          geom_boxplot() +
          scale_x_discrete(name = "") +
          scale_fill_manual(values=c("chartreuse4", "dodgerblue2", "mediumpurple2", "firebrick3"))+ ## colour of boxes
-         scale_y_continuous(name = "Number of FFM", breaks = scales::pretty_breaks(9)))
+         scale_y_continuous(name = "Number of FFM", breaks = scales::pretty_breaks(9), limits = c(0,9)))
 
 
 T1
@@ -376,7 +378,7 @@ tallyImpactx <- tal %>%
                                       "Healthy Biology, Very Likely Stressed","Unhealthy Biology, Very Likely Stressed")))
 
 
-catPal <- c("lightblue3", "lightpink3","dodgerblue", "red1",  "darkred") 
+catPal <- c("lightblue3", "lightpink3","dodgerblue", "red1", "blue", "darkred") 
 
 
 a1 <- ggplot(tallyImpactx, aes(fill=Result, y=PercChans, x=ModifiedClass)) + 
@@ -438,6 +440,8 @@ peakTally <- tallyImpactx %>%
 
 peakTally
 
+catPal <- c("lightblue3", "lightpink3","dodgerblue", "red1", "darkred") 
+
 a4 <- ggplot(peakTally, aes(fill=Result, y=PercChans, x=ModifiedClass)) + 
   geom_bar(position="stack", stat="identity") +
   facet_wrap(~Flow.Metric.Name) +
@@ -449,3 +453,4 @@ a4
 
 file.name1 <- paste0(out.dir, "06_peak_flows_stacked_perc_standard.jpg")
 ggsave(a4, filename=file.name1, dpi=600, height=7, width=11)
+

@@ -32,28 +32,31 @@ imps2
 
 ## format names
 impsx <- imps2 %>% 
-  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, COMID, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
+  dplyr::select(Index, Hydro_endpoint, Threshold, BioThresh,  masterid, comid, Flow.Metric.Name, Flow.Component, Result, longitude, latitude)  %>%
   mutate(Threshold = factor(Threshold, levels = c("NAT", "SB0", "SB2", "HB"), 
                             labels = c("Natural", "Soft Bottom (0)" , "Soft Bottom (2)", "Hard Bottom"))) %>%
-  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF") ~ "Healthy Biology",
-                               Result %in% c("UHUF", "UHMF", "UHLF") ~ "Unhealthy Biology")) %>%
+  mutate(BioResult = case_when(Result %in% c("HUF", "HMF","HLF", "HVUF") ~ "Healthy Biology",
+                               Result %in% c("UHUF", "UHMF", "UHLF", "UHVUF") ~ "Unhealthy Biology")) %>%
   mutate(FlowResult = case_when(Result %in% c("HUF", "UHUF") ~ "Unlikely Stressed",
+                                Result %in% c("HVUF", "UHVUF") ~ "Very Unlikely Stressed",
                                 Result %in% c("HMF", "UHMF") ~ "Likely Stressed",
-                                Result %in% c("HLF", "UHLF") ~ "Likely Very Stressed")) %>%
-  mutate(FlowResult = factor(FlowResult, levels = c("Unlikely Stressed", "Likely Stressed", "Likely Very Stressed"))) %>%
-  mutate(Result = factor(Result, levels = c("HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
-                         labels = c("Healthy Biology, Unlikely Stressed",
+                                Result %in% c("HLF", "UHLF") ~ "Very Likely Stressed")) %>%
+  mutate(FlowResult = factor(FlowResult, levels = c("Very Unlikely Stressed", "Unlikely Stressed", "Likely Stressed", "Very Likely Stressed"))) %>%
+  mutate(Result = factor(Result, levels = c("HVUF", "UHVUF", "HUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"),
+                         labels = c("Healthy Biology, Very Unlikely Stressed",
+                                    "Unhealthy Biology, Very Unlikely Stressed",
+                                    "Healthy Biology, Unlikely Stressed",
                                     "Unhealthy Biology, Unlikely Stressed",
                                     "Healthy Biology, Likely Stressed",
                                     "Unhealthy Biology, Likely Stressed",
-                                    "Healthy Biology, Likely Very Stressed",
-                                    "Unhealthy Biology, Likely Very Stressed"))) 
+                                    "Healthy Biology,  Very Likely Stressed",
+                                    "Unhealthy Biology,  Very Likely Stressed")))  
 
-unique(impsx$masterid) %in% sites
+# unique(impsx$masterid) %in% sites
 
 # Number of strikes -------------------------------------------------------
 ## upload number of ffm strikes 
-strikes <- read.csv("output_data/05_Number_ffm_per_result.csv") %>%
+strikes <- read.csv("final_data/05_Number_ffm_per_result.csv") %>%
   filter(Threshold == "NATMed", Index =="csci")  %>%
   dplyr::select(-X)
 
@@ -91,7 +94,7 @@ load(file = "final_data/01_bugs_algae_flow_joined_by_masterid.RData")
 
 ## get sites with flow data
 AllData <- AllData %>%
-  dplyr::select(-c(X, longitude, latitude, COMID, comid, flow_metric, Class2, hydro.endpoints, Flow.Component)) %>% ## remove redundant columns
+  dplyr::select(-c( longitude, latitude,  comid, flow_metric, Class2, hydro.endpoints, Flow.Component)) %>% ## remove redundant columns
   distinct() %>%
   drop_na(deltah_final) %>% ## remove sites with no FFM
   rename(Metric.Score = MetricValue, Modified.Class = channel_engineering_class, 
@@ -117,19 +120,16 @@ names(AllData2)
 ## get list of sites
 
 sites <- unique(AllData2$masterid)
-sites
+sites ## 359
 
 ## upload bio sites shape to get spatial info
 
-bio_sf <- st_read("ignore/01_bio_sites_all.shp")
-bio_sf
-
+load(file = "ignore/CSCI_CA_Aug2024.RData")
+csci
 ## subset all sites to sites in model
 
-bio_sf_sub <- bio_sf %>%
-  filter(masterid %in% sites) %>%
-  as.data.frame() %>% ## make into df
-  dplyr::select(-geometry)
+bio_sf_sub <-csci %>%
+  filter(masterid %in% sites)
 
 
 ## join with smc sites
@@ -149,7 +149,7 @@ head(imps2)
 ## format data for join
 imps1 <- impsx %>%
   filter(Index == "csci") %>%
-  dplyr::select(-c(Index, Hydro_endpoint, COMID, Flow.Component, longitude, latitude, Result)) %>% ## remove redundant columns
+  dplyr::select(-c(Index, Hydro_endpoint, comid, Flow.Component, longitude, latitude, Result)) %>% ## remove redundant columns
   mutate(Flow.Metric.Name = paste0(Flow.Metric.Name, " Stress Level")) %>%
   distinct() %>%
   pivot_wider(names_from = Flow.Metric.Name, values_from = FlowResult)
@@ -157,7 +157,7 @@ imps1 <- impsx %>%
 names(imps1)
 names(ffm_bio_tab)
 
-unique(imps2$masterid) %in% unique(ffm_bio_tab)
+unique(imps2$masterid) %in% unique(ffm_bio_tab$masterid)
 
 ## join with ffm and bio data
 
@@ -183,14 +183,14 @@ infoTable <- ffm_bio_stress_tab %>%
   mutate(RecentYear = max(sampleyear)) %>%
   mutate(YearKeep = ifelse(sampleyear == RecentYear, "Yes", "No")) %>%
   filter(YearKeep == "Yes") %>%
-  dplyr::select(-c(RecentYear, YearKeep, COMID, COMID1)) %>%
+  dplyr::select(-c(RecentYear, YearKeep, comid)) %>%
   drop_na(Modified.Class)
 
 names(infoTable)
 
 write.csv(infoTable, "final_data/07_ffm_bio_stresLevel_data_packet_all_counties_standard.csv")
 
-length(unique(infoTable$masterid)) ## 132
+length(unique(infoTable$masterid)) ## 341
 unique(infoTable$county)
 
 # Separate by county ------------------------------------------------------
