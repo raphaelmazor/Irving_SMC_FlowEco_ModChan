@@ -1,46 +1,46 @@
 "","Index","FlowMetric","ModifiedClass","NumberSitesPerClass"
-"1","csci","10-year flood magnitude","Hard Bottom",74
-"2","csci","10-year flood magnitude","Natural",247
-"3","csci","10-year flood magnitude","Soft Bottom (no hard sides)",13
-"4","csci","10-year flood magnitude","Soft Bottom (two hard sides)",25
-"5","csci","10-year flood magnitude",NA,40
-"6","csci","2-year flood magnitude","Hard Bottom",74
-"7","csci","2-year flood magnitude","Natural",247
-"8","csci","2-year flood magnitude","Soft Bottom (no hard sides)",13
-"9","csci","2-year flood magnitude","Soft Bottom (two hard sides)",25
-"10","csci","2-year flood magnitude",NA,40
-"11","csci","5-year flood magnitude","Hard Bottom",74
-"12","csci","5-year flood magnitude","Natural",247
-"13","csci","5-year flood magnitude","Soft Bottom (no hard sides)",13
-"14","csci","5-year flood magnitude","Soft Bottom (two hard sides)",25
-"15","csci","5-year flood magnitude",NA,40
-"16","csci","Dry-season median baseflow","Hard Bottom",74
-"17","csci","Dry-season median baseflow","Natural",247
-"18","csci","Dry-season median baseflow","Soft Bottom (no hard sides)",13
-"19","csci","Dry-season median baseflow","Soft Bottom (two hard sides)",25
-"20","csci","Dry-season median baseflow",NA,40
-"21","csci","Fall pulse magnitude","Hard Bottom",74
-"22","csci","Fall pulse magnitude","Natural",247
-"23","csci","Fall pulse magnitude","Soft Bottom (no hard sides)",13
-"24","csci","Fall pulse magnitude","Soft Bottom (two hard sides)",25
-"25","csci","Fall pulse magnitude",NA,40
-"26","csci","Magnitude of largest annual storm","Hard Bottom",74
-"27","csci","Magnitude of largest annual storm","Natural",247
-"28","csci","Magnitude of largest annual storm","Soft Bottom (no hard sides)",13
-"29","csci","Magnitude of largest annual storm","Soft Bottom (two hard sides)",25
-"30","csci","Magnitude of largest annual storm",NA,40
-"31","csci","Spring recession magnitude","Hard Bottom",74
-"32","csci","Spring recession magnitude","Natural",247
-"33","csci","Spring recession magnitude","Soft Bottom (no hard sides)",13
-"34","csci","Spring recession magnitude","Soft Bottom (two hard sides)",25
-"35","csci","Spring recession magnitude",NA,40
-"36","csci","Wet-season low baseflow","Hard Bottom",74
-"37","csci","Wet-season low baseflow","Natural",247
-"38","csci","Wet-season low baseflow","Soft Bottom (no hard sides)",13
-"39","csci","Wet-season low baseflow","Soft Bottom (two hard sides)",25
-"40","csci","Wet-season low baseflow",NA,40
-"41","csci","Wet-season median baseflow","Hard Bottom",74
-"42","csci","Wet-season median baseflow","Natural",247
-"43","csci","Wet-season median baseflow","Soft Bottom (no hard sides)",13
-"44","csci","Wet-season median baseflow","Soft Bottom (two hard sides)",25
-"45","csci","Wet-season median baseflow",NA,40
+"1","csci","10-year flood magnitude","Hard Bottom",75
+"2","csci","10-year flood magnitude","Natural",260
+"3","csci","10-year flood magnitude","Soft Bottom (no hard sides)",14
+"4","csci","10-year flood magnitude","Soft Bottom (two hard sides)",29
+"5","csci","10-year flood magnitude",NA,21
+"6","csci","2-year flood magnitude","Hard Bottom",75
+"7","csci","2-year flood magnitude","Natural",260
+"8","csci","2-year flood magnitude","Soft Bottom (no hard sides)",14
+"9","csci","2-year flood magnitude","Soft Bottom (two hard sides)",29
+"10","csci","2-year flood magnitude",NA,21
+"11","csci","5-year flood magnitude","Hard Bottom",75
+"12","csci","5-year flood magnitude","Natural",260
+"13","csci","5-year flood magnitude","Soft Bottom (no hard sides)",14
+"14","csci","5-year flood magnitude","Soft Bottom (two hard sides)",29
+"15","csci","5-year flood magnitude",NA,21
+"16","csci","Dry-season median baseflow","Hard Bottom",75
+"17","csci","Dry-season median baseflow","Natural",260
+"18","csci","Dry-season median baseflow","Soft Bottom (no hard sides)",14
+"19","csci","Dry-season median baseflow","Soft Bottom (two hard sides)",29
+"20","csci","Dry-season median baseflow",NA,21
+"21","csci","Fall pulse magnitude","Hard Bottom",75
+"22","csci","Fall pulse magnitude","Natural",260
+"23","csci","Fall pulse magnitude","Soft Bottom (no hard sides)",14
+"24","csci","Fall pulse magnitude","Soft Bottom (two hard sides)",29
+"25","csci","Fall pulse magnitude",NA,21
+"26","csci","Magnitude of largest annual storm","Hard Bottom",75
+"27","csci","Magnitude of largest annual storm","Natural",260
+"28","csci","Magnitude of largest annual storm","Soft Bottom (no hard sides)",14
+"29","csci","Magnitude of largest annual storm","Soft Bottom (two hard sides)",29
+"30","csci","Magnitude of largest annual storm",NA,21
+"31","csci","Spring recession magnitude","Hard Bottom",75
+"32","csci","Spring recession magnitude","Natural",260
+"33","csci","Spring recession magnitude","Soft Bottom (no hard sides)",14
+"34","csci","Spring recession magnitude","Soft Bottom (two hard sides)",29
+"35","csci","Spring recession magnitude",NA,21
+"36","csci","Wet-season low baseflow","Hard Bottom",75
+"37","csci","Wet-season low baseflow","Natural",260
+"38","csci","Wet-season low baseflow","Soft Bottom (no hard sides)",14
+"39","csci","Wet-season low baseflow","Soft Bottom (two hard sides)",29
+"40","csci","Wet-season low baseflow",NA,21
+"41","csci","Wet-season median baseflow","Hard Bottom",75
+"42","csci","Wet-season median baseflow","Natural",260
+"43","csci","Wet-season median baseflow","Soft Bottom (no hard sides)",14
+"44","csci","Wet-season median baseflow","Soft Bottom (two hard sides)",29
+"45","csci","Wet-season median baseflow",NA,21

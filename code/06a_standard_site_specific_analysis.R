@@ -29,7 +29,7 @@ imps <- imps %>%
 
 ## add eng data
 ## upload
-BioEng <- read.csv("ignore/02_chan_eng.csv") %>% ## upload data
+BioEng <- read.csv("ignore/Chan_eng_all_SMC.csv") %>% ## upload data
   select(-c(X,channel_engineering_classification_date, channel_engineering_personnel, channel_engineering_comments, Class2)) 
 
 ## join to results and format to match
@@ -92,7 +92,7 @@ FinalTable <- FinalTablex %>%
   drop_na(ModifiedClass) %>%
   pivot_wider(names_from = Impact, values_from = PercentageOfSites) %>%
   mutate(across(everything(), .fns = ~replace_na(.,0))) %>%
-  select(Index:ModifiedClass, HUF, UHUF, HMF, UHMF, HLF, UHLF)
+  select(Index:ModifiedClass, HBUS, UBUS, HBLS, UBLS, HBVLS, UBVLS)
 
 ## join number of sites
 

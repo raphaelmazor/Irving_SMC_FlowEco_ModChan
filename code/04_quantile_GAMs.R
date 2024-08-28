@@ -7,7 +7,7 @@ library(gam)
 library(tidylog)
 
 out.dir <- "final_figures/"
-
+?smooth.terms
 getwd()
 # Upload data ---------------------------------------------------
 

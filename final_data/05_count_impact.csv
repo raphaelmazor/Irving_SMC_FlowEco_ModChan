@@ -1,275 +1,259 @@
 "","Index","Hydro_endpoint","Flow.Metric.Name","Threshold","Result","n"
-"1","csci","DS_Mag_50","Dry-season median baseflow","HB","HMF",1
-"2","csci","DS_Mag_50","Dry-season median baseflow","HB","HUF",1
-"3","csci","DS_Mag_50","Dry-season median baseflow","HB","UHLF",14
-"4","csci","DS_Mag_50","Dry-season median baseflow","HB","UHMF",24
-"5","csci","DS_Mag_50","Dry-season median baseflow","HB","UHUF",25
-"6","csci","DS_Mag_50","Dry-season median baseflow","HB","UHVUF",10
-"7","csci","DS_Mag_50","Dry-season median baseflow","NAT","HLF",1
-"8","csci","DS_Mag_50","Dry-season median baseflow","NAT","HMF",44
-"9","csci","DS_Mag_50","Dry-season median baseflow","NAT","HUF",86
-"10","csci","DS_Mag_50","Dry-season median baseflow","NAT","UHLF",6
-"11","csci","DS_Mag_50","Dry-season median baseflow","NAT","UHMF",43
-"12","csci","DS_Mag_50","Dry-season median baseflow","NAT","UHUF",80
-"13","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","HLF",5
-"14","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","HMF",82
-"15","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","UHLF",72
-"16","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","UHMF",240
-"17","csci","DS_Mag_50","Dry-season median baseflow","NATLow","HMF",20
-"18","csci","DS_Mag_50","Dry-season median baseflow","NATLow","HUF",37
-"19","csci","DS_Mag_50","Dry-season median baseflow","NATLow","HVUF",202
-"20","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UHLF",10
-"21","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UHMF",41
-"22","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UHUF",11
-"23","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UHVUF",78
-"24","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HLF",1
-"25","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HMF",50
-"26","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HUF",97
-"27","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UHLF",43
-"28","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UHMF",97
-"29","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UHUF",111
-"30","csci","DS_Mag_50","Dry-season median baseflow","SB0","HUF",1
-"31","csci","DS_Mag_50","Dry-season median baseflow","SB0","UHLF",2
-"32","csci","DS_Mag_50","Dry-season median baseflow","SB0","UHMF",6
-"33","csci","DS_Mag_50","Dry-season median baseflow","SB0","UHUF",5
-"34","csci","DS_Mag_50","Dry-season median baseflow","SB2","HUF",2
-"35","csci","DS_Mag_50","Dry-season median baseflow","SB2","UHLF",1
-"36","csci","DS_Mag_50","Dry-season median baseflow","SB2","UHMF",13
-"37","csci","DS_Mag_50","Dry-season median baseflow","SB2","UHUF",13
-"38","csci","FA_Mag","Fall pulse magnitude","HB","HMF",1
-"39","csci","FA_Mag","Fall pulse magnitude","HB","HUF",1
-"40","csci","FA_Mag","Fall pulse magnitude","HB","UHLF",22
-"41","csci","FA_Mag","Fall pulse magnitude","HB","UHMF",16
-"42","csci","FA_Mag","Fall pulse magnitude","HB","UHUF",29
-"43","csci","FA_Mag","Fall pulse magnitude","HB","UHVUF",6
-"44","csci","FA_Mag","Fall pulse magnitude","NAT","HLF",1
-"45","csci","FA_Mag","Fall pulse magnitude","NAT","HMF",51
-"46","csci","FA_Mag","Fall pulse magnitude","NAT","HUF",79
-"47","csci","FA_Mag","Fall pulse magnitude","NAT","UHLF",1
-"48","csci","FA_Mag","Fall pulse magnitude","NAT","UHMF",64
-"49","csci","FA_Mag","Fall pulse magnitude","NAT","UHUF",64
-"50","csci","FA_Mag","Fall pulse magnitude","NATHigh","HLF",2
-"51","csci","FA_Mag","Fall pulse magnitude","NATHigh","HMF",85
-"52","csci","FA_Mag","Fall pulse magnitude","NATHigh","UHLF",54
-"53","csci","FA_Mag","Fall pulse magnitude","NATHigh","UHMF",258
-"54","csci","FA_Mag","Fall pulse magnitude","NATLow","HMF",13
-"55","csci","FA_Mag","Fall pulse magnitude","NATLow","HUF",24
-"56","csci","FA_Mag","Fall pulse magnitude","NATLow","HVUF",222
-"57","csci","FA_Mag","Fall pulse magnitude","NATLow","UHLF",24
-"58","csci","FA_Mag","Fall pulse magnitude","NATLow","UHMF",25
-"59","csci","FA_Mag","Fall pulse magnitude","NATLow","UHUF",26
-"60","csci","FA_Mag","Fall pulse magnitude","NATLow","UHVUF",65
-"61","csci","FA_Mag","Fall pulse magnitude","NATMed","HLF",1
-"62","csci","FA_Mag","Fall pulse magnitude","NATMed","HMF",58
-"63","csci","FA_Mag","Fall pulse magnitude","NATMed","HUF",89
-"64","csci","FA_Mag","Fall pulse magnitude","NATMed","UHLF",33
-"65","csci","FA_Mag","Fall pulse magnitude","NATMed","UHMF",130
-"66","csci","FA_Mag","Fall pulse magnitude","NATMed","UHUF",88
-"67","csci","FA_Mag","Fall pulse magnitude","SB0","HUF",1
-"68","csci","FA_Mag","Fall pulse magnitude","SB0","UHLF",2
-"69","csci","FA_Mag","Fall pulse magnitude","SB0","UHMF",3
-"70","csci","FA_Mag","Fall pulse magnitude","SB0","UHUF",8
-"71","csci","FA_Mag","Fall pulse magnitude","SB2","HUF",2
-"72","csci","FA_Mag","Fall pulse magnitude","SB2","UHLF",6
-"73","csci","FA_Mag","Fall pulse magnitude","SB2","UHMF",7
-"74","csci","FA_Mag","Fall pulse magnitude","SB2","UHUF",14
-"75","csci","Peak_10","10-year flood magnitude","HB","HMF",1
-"76","csci","Peak_10","10-year flood magnitude","HB","HUF",1
-"77","csci","Peak_10","10-year flood magnitude","HB","UHLF",1
-"78","csci","Peak_10","10-year flood magnitude","HB","UHMF",27
-"79","csci","Peak_10","10-year flood magnitude","HB","UHUF",36
-"80","csci","Peak_10","10-year flood magnitude","HB","UHVUF",9
-"81","csci","Peak_10","10-year flood magnitude","NAT","HMF",110
-"82","csci","Peak_10","10-year flood magnitude","NAT","HUF",21
-"83","csci","Peak_10","10-year flood magnitude","NAT","UHLF",1
-"84","csci","Peak_10","10-year flood magnitude","NAT","UHMF",121
-"85","csci","Peak_10","10-year flood magnitude","NAT","UHUF",7
-"86","csci","Peak_10","10-year flood magnitude","NATHigh","HLF",4
-"87","csci","Peak_10","10-year flood magnitude","NATHigh","HMF",83
-"88","csci","Peak_10","10-year flood magnitude","NATHigh","UHLF",35
-"89","csci","Peak_10","10-year flood magnitude","NATHigh","UHMF",277
-"90","csci","Peak_10","10-year flood magnitude","NATLow","HMF",29
-"91","csci","Peak_10","10-year flood magnitude","NATLow","HUF",54
-"92","csci","Peak_10","10-year flood magnitude","NATLow","HVUF",176
-"93","csci","Peak_10","10-year flood magnitude","NATLow","UHLF",1
-"94","csci","Peak_10","10-year flood magnitude","NATLow","UHMF",41
-"95","csci","Peak_10","10-year flood magnitude","NATLow","UHUF",42
-"96","csci","Peak_10","10-year flood magnitude","NATLow","UHVUF",56
-"97","csci","Peak_10","10-year flood magnitude","NATMed","HMF",126
-"98","csci","Peak_10","10-year flood magnitude","NATMed","HUF",22
-"99","csci","Peak_10","10-year flood magnitude","NATMed","UHLF",11
-"100","csci","Peak_10","10-year flood magnitude","NATMed","UHMF",230
-"101","csci","Peak_10","10-year flood magnitude","NATMed","UHUF",10
-"102","csci","Peak_10","10-year flood magnitude","SB0","HMF",1
-"103","csci","Peak_10","10-year flood magnitude","SB0","UHLF",1
-"104","csci","Peak_10","10-year flood magnitude","SB0","UHMF",8
-"105","csci","Peak_10","10-year flood magnitude","SB0","UHUF",4
-"106","csci","Peak_10","10-year flood magnitude","SB2","HVUF",2
-"107","csci","Peak_10","10-year flood magnitude","SB2","UHLF",5
-"108","csci","Peak_10","10-year flood magnitude","SB2","UHMF",11
-"109","csci","Peak_10","10-year flood magnitude","SB2","UHUF",6
-"110","csci","Peak_10","10-year flood magnitude","SB2","UHVUF",5
-"111","csci","Peak_2","2-year flood magnitude","HB","HUF",2
-"112","csci","Peak_2","2-year flood magnitude","HB","UHMF",2
-"113","csci","Peak_2","2-year flood magnitude","HB","UHUF",71
-"114","csci","Peak_2","2-year flood magnitude","NAT","HMF",131
-"115","csci","Peak_2","2-year flood magnitude","NAT","UHLF",4
-"116","csci","Peak_2","2-year flood magnitude","NAT","UHMF",125
-"117","csci","Peak_2","2-year flood magnitude","NATHigh","HLF",1
-"118","csci","Peak_2","2-year flood magnitude","NATHigh","HMF",86
-"119","csci","Peak_2","2-year flood magnitude","NATHigh","UHLF",34
-"120","csci","Peak_2","2-year flood magnitude","NATHigh","UHMF",278
-"121","csci","Peak_2","2-year flood magnitude","NATLow","HMF",8
-"122","csci","Peak_2","2-year flood magnitude","NATLow","HUF",251
-"123","csci","Peak_2","2-year flood magnitude","NATLow","UHMF",9
-"124","csci","Peak_2","2-year flood magnitude","NATLow","UHUF",131
-"125","csci","Peak_2","2-year flood magnitude","NATMed","HMF",148
-"126","csci","Peak_2","2-year flood magnitude","NATMed","UHLF",13
-"127","csci","Peak_2","2-year flood magnitude","NATMed","UHMF",238
-"128","csci","Peak_2","2-year flood magnitude","SB0","HMF",1
-"129","csci","Peak_2","2-year flood magnitude","SB0","UHLF",1
-"130","csci","Peak_2","2-year flood magnitude","SB0","UHMF",12
-"131","csci","Peak_2","2-year flood magnitude","SB2","HUF",2
-"132","csci","Peak_2","2-year flood magnitude","SB2","UHLF",5
-"133","csci","Peak_2","2-year flood magnitude","SB2","UHMF",4
-"134","csci","Peak_2","2-year flood magnitude","SB2","UHUF",18
-"135","csci","Peak_5","5-year flood magnitude","HB","HMF",1
-"136","csci","Peak_5","5-year flood magnitude","HB","HUF",1
-"137","csci","Peak_5","5-year flood magnitude","HB","UHLF",1
-"138","csci","Peak_5","5-year flood magnitude","HB","UHMF",22
-"139","csci","Peak_5","5-year flood magnitude","HB","UHUF",50
-"140","csci","Peak_5","5-year flood magnitude","NAT","HMF",82
-"141","csci","Peak_5","5-year flood magnitude","NAT","HUF",49
-"142","csci","Peak_5","5-year flood magnitude","NAT","UHMF",90
-"143","csci","Peak_5","5-year flood magnitude","NAT","UHUF",39
-"144","csci","Peak_5","5-year flood magnitude","NATHigh","HLF",5
-"145","csci","Peak_5","5-year flood magnitude","NATHigh","HMF",82
-"146","csci","Peak_5","5-year flood magnitude","NATHigh","UHLF",66
-"147","csci","Peak_5","5-year flood magnitude","NATHigh","UHMF",246
-"148","csci","Peak_5","5-year flood magnitude","NATLow","HMF",27
-"149","csci","Peak_5","5-year flood magnitude","NATLow","HUF",100
-"150","csci","Peak_5","5-year flood magnitude","NATLow","HVUF",132
-"151","csci","Peak_5","5-year flood magnitude","NATLow","UHLF",1
-"152","csci","Peak_5","5-year flood magnitude","NATLow","UHMF",23
-"153","csci","Peak_5","5-year flood magnitude","NATLow","UHUF",55
-"154","csci","Peak_5","5-year flood magnitude","NATLow","UHVUF",61
-"155","csci","Peak_5","5-year flood magnitude","NATMed","HMF",89
-"156","csci","Peak_5","5-year flood magnitude","NATMed","HUF",59
-"157","csci","Peak_5","5-year flood magnitude","NATMed","UHLF",8
-"158","csci","Peak_5","5-year flood magnitude","NATMed","UHMF",177
-"159","csci","Peak_5","5-year flood magnitude","NATMed","UHUF",66
-"160","csci","Peak_5","5-year flood magnitude","SB0","HMF",1
-"161","csci","Peak_5","5-year flood magnitude","SB0","UHLF",1
-"162","csci","Peak_5","5-year flood magnitude","SB0","UHMF",12
-"163","csci","Peak_5","5-year flood magnitude","SB2","HUF",2
-"164","csci","Peak_5","5-year flood magnitude","SB2","UHLF",5
-"165","csci","Peak_5","5-year flood magnitude","SB2","UHMF",10
-"166","csci","Peak_5","5-year flood magnitude","SB2","UHUF",12
-"167","csci","Q99","Magnitude of largest annual storm","HB","HMF",1
-"168","csci","Q99","Magnitude of largest annual storm","HB","HUF",1
-"169","csci","Q99","Magnitude of largest annual storm","HB","UHLF",1
-"170","csci","Q99","Magnitude of largest annual storm","HB","UHMF",16
-"171","csci","Q99","Magnitude of largest annual storm","HB","UHUF",56
-"172","csci","Q99","Magnitude of largest annual storm","NAT","HMF",111
-"173","csci","Q99","Magnitude of largest annual storm","NAT","HUF",20
-"174","csci","Q99","Magnitude of largest annual storm","NAT","UHMF",98
-"175","csci","Q99","Magnitude of largest annual storm","NAT","UHUF",31
-"176","csci","Q99","Magnitude of largest annual storm","NATHigh","HMF",87
-"177","csci","Q99","Magnitude of largest annual storm","NATHigh","UHLF",14
-"178","csci","Q99","Magnitude of largest annual storm","NATHigh","UHMF",298
-"179","csci","Q99","Magnitude of largest annual storm","NATLow","HMF",50
-"180","csci","Q99","Magnitude of largest annual storm","NATLow","HUF",209
-"181","csci","Q99","Magnitude of largest annual storm","NATLow","UHLF",6
-"182","csci","Q99","Magnitude of largest annual storm","NATLow","UHMF",37
-"183","csci","Q99","Magnitude of largest annual storm","NATLow","UHUF",97
-"184","csci","Q99","Magnitude of largest annual storm","NATMed","HMF",125
-"185","csci","Q99","Magnitude of largest annual storm","NATMed","HUF",23
-"186","csci","Q99","Magnitude of largest annual storm","NATMed","UHLF",8
-"187","csci","Q99","Magnitude of largest annual storm","NATMed","UHMF",189
-"188","csci","Q99","Magnitude of largest annual storm","NATMed","UHUF",54
-"189","csci","Q99","Magnitude of largest annual storm","SB0","HMF",1
-"190","csci","Q99","Magnitude of largest annual storm","SB0","UHLF",1
-"191","csci","Q99","Magnitude of largest annual storm","SB0","UHMF",7
-"192","csci","Q99","Magnitude of largest annual storm","SB0","UHUF",5
-"193","csci","Q99","Magnitude of largest annual storm","SB2","HMF",2
-"194","csci","Q99","Magnitude of largest annual storm","SB2","UHLF",5
-"195","csci","Q99","Magnitude of largest annual storm","SB2","UHMF",14
-"196","csci","Q99","Magnitude of largest annual storm","SB2","UHUF",8
-"197","csci","SP_Mag","Spring recession magnitude","HB","HUF",2
-"198","csci","SP_Mag","Spring recession magnitude","HB","UHMF",2
-"199","csci","SP_Mag","Spring recession magnitude","HB","UHUF",71
-"200","csci","SP_Mag","Spring recession magnitude","NAT","HMF",131
-"201","csci","SP_Mag","Spring recession magnitude","NAT","UHMF",129
-"202","csci","SP_Mag","Spring recession magnitude","NATHigh","HLF",2
-"203","csci","SP_Mag","Spring recession magnitude","NATHigh","HMF",85
-"204","csci","SP_Mag","Spring recession magnitude","NATHigh","UHLF",1
-"205","csci","SP_Mag","Spring recession magnitude","NATHigh","UHMF",311
-"206","csci","SP_Mag","Spring recession magnitude","NATLow","HMF",7
-"207","csci","SP_Mag","Spring recession magnitude","NATLow","HUF",252
-"208","csci","SP_Mag","Spring recession magnitude","NATLow","UHMF",10
-"209","csci","SP_Mag","Spring recession magnitude","NATLow","UHUF",130
-"210","csci","SP_Mag","Spring recession magnitude","NATMed","HMF",148
-"211","csci","SP_Mag","Spring recession magnitude","NATMed","UHMF",251
-"212","csci","SP_Mag","Spring recession magnitude","SB0","HMF",1
-"213","csci","SP_Mag","Spring recession magnitude","SB0","UHMF",13
-"214","csci","SP_Mag","Spring recession magnitude","SB2","HUF",2
-"215","csci","SP_Mag","Spring recession magnitude","SB2","UHMF",22
-"216","csci","SP_Mag","Spring recession magnitude","SB2","UHUF",5
-"217","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","HUF",2
-"218","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UHLF",2
-"219","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UHMF",30
-"220","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UHUF",41
-"221","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HLF",1
-"222","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HMF",83
-"223","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HUF",47
-"224","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UHLF",2
-"225","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UHMF",99
-"226","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UHUF",28
-"227","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","HLF",3
-"228","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","HMF",84
-"229","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","UHLF",36
-"230","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","UHMF",276
-"231","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","HMF",16
-"232","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","HUF",40
-"233","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","HVUF",203
-"234","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UHLF",2
-"235","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UHMF",41
-"236","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UHUF",25
-"237","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UHVUF",72
-"238","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HLF",1
-"239","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HMF",95
-"240","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HUF",52
-"241","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UHLF",17
-"242","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UHMF",191
-"243","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UHUF",43
-"244","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","HUF",1
-"245","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UHLF",1
-"246","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UHMF",7
-"247","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UHUF",5
-"248","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","HUF",2
-"249","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UHLF",5
-"250","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UHMF",6
-"251","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UHUF",16
-"252","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","HUF",2
-"253","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","UHMF",21
-"254","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","UHUF",52
-"255","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NAT","HMF",131
-"256","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NAT","UHMF",129
-"257","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","HMF",87
-"258","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","UHLF",10
-"259","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","UHMF",302
-"260","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","HMF",11
-"261","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","HUF",245
-"262","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","HVUF",3
-"263","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","UHMF",16
-"264","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","UHUF",123
-"265","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","UHVUF",1
-"266","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","HMF",148
-"267","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","UHLF",7
-"268","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","UHMF",244
-"269","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","HMF",1
-"270","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","UHLF",1
-"271","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","UHMF",12
-"272","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","HUF",2
-"273","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","UHMF",9
-"274","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","UHUF",18
+"1","csci","DS_Mag_50","Dry-season median baseflow","HB","HBLS",1
+"2","csci","DS_Mag_50","Dry-season median baseflow","HB","HBUS",1
+"3","csci","DS_Mag_50","Dry-season median baseflow","HB","UBLS",24
+"4","csci","DS_Mag_50","Dry-season median baseflow","HB","UBUS",35
+"5","csci","DS_Mag_50","Dry-season median baseflow","HB","UBVLS",14
+"6","csci","DS_Mag_50","Dry-season median baseflow","NAT","HBLS",44
+"7","csci","DS_Mag_50","Dry-season median baseflow","NAT","HBUS",86
+"8","csci","DS_Mag_50","Dry-season median baseflow","NAT","HBVLS",1
+"9","csci","DS_Mag_50","Dry-season median baseflow","NAT","UBLS",43
+"10","csci","DS_Mag_50","Dry-season median baseflow","NAT","UBUS",80
+"11","csci","DS_Mag_50","Dry-season median baseflow","NAT","UBVLS",6
+"12","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","HBLS",82
+"13","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","HBVLS",5
+"14","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","UBLS",240
+"15","csci","DS_Mag_50","Dry-season median baseflow","NATHigh","UBVLS",72
+"16","csci","DS_Mag_50","Dry-season median baseflow","NATLow","HBLS",20
+"17","csci","DS_Mag_50","Dry-season median baseflow","NATLow","HBUS",239
+"18","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UBLS",41
+"19","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UBUS",89
+"20","csci","DS_Mag_50","Dry-season median baseflow","NATLow","UBVLS",10
+"21","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HBLS",50
+"22","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HBUS",97
+"23","csci","DS_Mag_50","Dry-season median baseflow","NATMed","HBVLS",1
+"24","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UBLS",97
+"25","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UBUS",111
+"26","csci","DS_Mag_50","Dry-season median baseflow","NATMed","UBVLS",43
+"27","csci","DS_Mag_50","Dry-season median baseflow","SB0","HBUS",1
+"28","csci","DS_Mag_50","Dry-season median baseflow","SB0","UBLS",6
+"29","csci","DS_Mag_50","Dry-season median baseflow","SB0","UBUS",5
+"30","csci","DS_Mag_50","Dry-season median baseflow","SB0","UBVLS",2
+"31","csci","DS_Mag_50","Dry-season median baseflow","SB2","HBUS",2
+"32","csci","DS_Mag_50","Dry-season median baseflow","SB2","UBLS",13
+"33","csci","DS_Mag_50","Dry-season median baseflow","SB2","UBUS",13
+"34","csci","DS_Mag_50","Dry-season median baseflow","SB2","UBVLS",1
+"35","csci","FA_Mag","Fall pulse magnitude","HB","HBLS",1
+"36","csci","FA_Mag","Fall pulse magnitude","HB","HBUS",1
+"37","csci","FA_Mag","Fall pulse magnitude","HB","UBLS",16
+"38","csci","FA_Mag","Fall pulse magnitude","HB","UBUS",35
+"39","csci","FA_Mag","Fall pulse magnitude","HB","UBVLS",22
+"40","csci","FA_Mag","Fall pulse magnitude","NAT","HBLS",51
+"41","csci","FA_Mag","Fall pulse magnitude","NAT","HBUS",79
+"42","csci","FA_Mag","Fall pulse magnitude","NAT","HBVLS",1
+"43","csci","FA_Mag","Fall pulse magnitude","NAT","UBLS",64
+"44","csci","FA_Mag","Fall pulse magnitude","NAT","UBUS",64
+"45","csci","FA_Mag","Fall pulse magnitude","NAT","UBVLS",1
+"46","csci","FA_Mag","Fall pulse magnitude","NATHigh","HBLS",85
+"47","csci","FA_Mag","Fall pulse magnitude","NATHigh","HBVLS",2
+"48","csci","FA_Mag","Fall pulse magnitude","NATHigh","UBLS",258
+"49","csci","FA_Mag","Fall pulse magnitude","NATHigh","UBVLS",54
+"50","csci","FA_Mag","Fall pulse magnitude","NATLow","HBLS",13
+"51","csci","FA_Mag","Fall pulse magnitude","NATLow","HBUS",246
+"52","csci","FA_Mag","Fall pulse magnitude","NATLow","UBLS",25
+"53","csci","FA_Mag","Fall pulse magnitude","NATLow","UBUS",91
+"54","csci","FA_Mag","Fall pulse magnitude","NATLow","UBVLS",24
+"55","csci","FA_Mag","Fall pulse magnitude","NATMed","HBLS",58
+"56","csci","FA_Mag","Fall pulse magnitude","NATMed","HBUS",89
+"57","csci","FA_Mag","Fall pulse magnitude","NATMed","HBVLS",1
+"58","csci","FA_Mag","Fall pulse magnitude","NATMed","UBLS",130
+"59","csci","FA_Mag","Fall pulse magnitude","NATMed","UBUS",88
+"60","csci","FA_Mag","Fall pulse magnitude","NATMed","UBVLS",33
+"61","csci","FA_Mag","Fall pulse magnitude","SB0","HBUS",1
+"62","csci","FA_Mag","Fall pulse magnitude","SB0","UBLS",3
+"63","csci","FA_Mag","Fall pulse magnitude","SB0","UBUS",8
+"64","csci","FA_Mag","Fall pulse magnitude","SB0","UBVLS",2
+"65","csci","FA_Mag","Fall pulse magnitude","SB2","HBUS",2
+"66","csci","FA_Mag","Fall pulse magnitude","SB2","UBLS",7
+"67","csci","FA_Mag","Fall pulse magnitude","SB2","UBUS",14
+"68","csci","FA_Mag","Fall pulse magnitude","SB2","UBVLS",6
+"69","csci","Peak_10","10-year flood magnitude","HB","HBLS",1
+"70","csci","Peak_10","10-year flood magnitude","HB","HBUS",1
+"71","csci","Peak_10","10-year flood magnitude","HB","UBLS",27
+"72","csci","Peak_10","10-year flood magnitude","HB","UBUS",45
+"73","csci","Peak_10","10-year flood magnitude","HB","UBVLS",1
+"74","csci","Peak_10","10-year flood magnitude","NAT","HBLS",110
+"75","csci","Peak_10","10-year flood magnitude","NAT","HBUS",21
+"76","csci","Peak_10","10-year flood magnitude","NAT","UBLS",121
+"77","csci","Peak_10","10-year flood magnitude","NAT","UBUS",7
+"78","csci","Peak_10","10-year flood magnitude","NAT","UBVLS",1
+"79","csci","Peak_10","10-year flood magnitude","NATHigh","HBLS",83
+"80","csci","Peak_10","10-year flood magnitude","NATHigh","HBVLS",4
+"81","csci","Peak_10","10-year flood magnitude","NATHigh","UBLS",277
+"82","csci","Peak_10","10-year flood magnitude","NATHigh","UBVLS",35
+"83","csci","Peak_10","10-year flood magnitude","NATLow","HBLS",29
+"84","csci","Peak_10","10-year flood magnitude","NATLow","HBUS",230
+"85","csci","Peak_10","10-year flood magnitude","NATLow","UBLS",41
+"86","csci","Peak_10","10-year flood magnitude","NATLow","UBUS",98
+"87","csci","Peak_10","10-year flood magnitude","NATLow","UBVLS",1
+"88","csci","Peak_10","10-year flood magnitude","NATMed","HBLS",126
+"89","csci","Peak_10","10-year flood magnitude","NATMed","HBUS",22
+"90","csci","Peak_10","10-year flood magnitude","NATMed","UBLS",230
+"91","csci","Peak_10","10-year flood magnitude","NATMed","UBUS",10
+"92","csci","Peak_10","10-year flood magnitude","NATMed","UBVLS",11
+"93","csci","Peak_10","10-year flood magnitude","SB0","HBLS",1
+"94","csci","Peak_10","10-year flood magnitude","SB0","UBLS",8
+"95","csci","Peak_10","10-year flood magnitude","SB0","UBUS",4
+"96","csci","Peak_10","10-year flood magnitude","SB0","UBVLS",1
+"97","csci","Peak_10","10-year flood magnitude","SB2","HBUS",2
+"98","csci","Peak_10","10-year flood magnitude","SB2","UBLS",11
+"99","csci","Peak_10","10-year flood magnitude","SB2","UBUS",11
+"100","csci","Peak_10","10-year flood magnitude","SB2","UBVLS",5
+"101","csci","Peak_2","2-year flood magnitude","HB","HBUS",2
+"102","csci","Peak_2","2-year flood magnitude","HB","UBLS",2
+"103","csci","Peak_2","2-year flood magnitude","HB","UBUS",71
+"104","csci","Peak_2","2-year flood magnitude","NAT","HBLS",131
+"105","csci","Peak_2","2-year flood magnitude","NAT","UBLS",125
+"106","csci","Peak_2","2-year flood magnitude","NAT","UBVLS",4
+"107","csci","Peak_2","2-year flood magnitude","NATHigh","HBLS",86
+"108","csci","Peak_2","2-year flood magnitude","NATHigh","HBVLS",1
+"109","csci","Peak_2","2-year flood magnitude","NATHigh","UBLS",278
+"110","csci","Peak_2","2-year flood magnitude","NATHigh","UBVLS",34
+"111","csci","Peak_2","2-year flood magnitude","NATLow","HBLS",8
+"112","csci","Peak_2","2-year flood magnitude","NATLow","HBUS",251
+"113","csci","Peak_2","2-year flood magnitude","NATLow","UBLS",9
+"114","csci","Peak_2","2-year flood magnitude","NATLow","UBUS",131
+"115","csci","Peak_2","2-year flood magnitude","NATMed","HBLS",148
+"116","csci","Peak_2","2-year flood magnitude","NATMed","UBLS",238
+"117","csci","Peak_2","2-year flood magnitude","NATMed","UBVLS",13
+"118","csci","Peak_2","2-year flood magnitude","SB0","HBLS",1
+"119","csci","Peak_2","2-year flood magnitude","SB0","UBLS",12
+"120","csci","Peak_2","2-year flood magnitude","SB0","UBVLS",1
+"121","csci","Peak_2","2-year flood magnitude","SB2","HBUS",2
+"122","csci","Peak_2","2-year flood magnitude","SB2","UBLS",4
+"123","csci","Peak_2","2-year flood magnitude","SB2","UBUS",18
+"124","csci","Peak_2","2-year flood magnitude","SB2","UBVLS",5
+"125","csci","Peak_5","5-year flood magnitude","HB","HBLS",1
+"126","csci","Peak_5","5-year flood magnitude","HB","HBUS",1
+"127","csci","Peak_5","5-year flood magnitude","HB","UBLS",22
+"128","csci","Peak_5","5-year flood magnitude","HB","UBUS",50
+"129","csci","Peak_5","5-year flood magnitude","HB","UBVLS",1
+"130","csci","Peak_5","5-year flood magnitude","NAT","HBLS",82
+"131","csci","Peak_5","5-year flood magnitude","NAT","HBUS",49
+"132","csci","Peak_5","5-year flood magnitude","NAT","UBLS",90
+"133","csci","Peak_5","5-year flood magnitude","NAT","UBUS",39
+"134","csci","Peak_5","5-year flood magnitude","NATHigh","HBLS",82
+"135","csci","Peak_5","5-year flood magnitude","NATHigh","HBVLS",5
+"136","csci","Peak_5","5-year flood magnitude","NATHigh","UBLS",246
+"137","csci","Peak_5","5-year flood magnitude","NATHigh","UBVLS",66
+"138","csci","Peak_5","5-year flood magnitude","NATLow","HBLS",27
+"139","csci","Peak_5","5-year flood magnitude","NATLow","HBUS",232
+"140","csci","Peak_5","5-year flood magnitude","NATLow","UBLS",23
+"141","csci","Peak_5","5-year flood magnitude","NATLow","UBUS",116
+"142","csci","Peak_5","5-year flood magnitude","NATLow","UBVLS",1
+"143","csci","Peak_5","5-year flood magnitude","NATMed","HBLS",89
+"144","csci","Peak_5","5-year flood magnitude","NATMed","HBUS",59
+"145","csci","Peak_5","5-year flood magnitude","NATMed","UBLS",177
+"146","csci","Peak_5","5-year flood magnitude","NATMed","UBUS",66
+"147","csci","Peak_5","5-year flood magnitude","NATMed","UBVLS",8
+"148","csci","Peak_5","5-year flood magnitude","SB0","HBLS",1
+"149","csci","Peak_5","5-year flood magnitude","SB0","UBLS",12
+"150","csci","Peak_5","5-year flood magnitude","SB0","UBVLS",1
+"151","csci","Peak_5","5-year flood magnitude","SB2","HBUS",2
+"152","csci","Peak_5","5-year flood magnitude","SB2","UBLS",10
+"153","csci","Peak_5","5-year flood magnitude","SB2","UBUS",12
+"154","csci","Peak_5","5-year flood magnitude","SB2","UBVLS",5
+"155","csci","Q99","Magnitude of largest annual storm","HB","HBLS",1
+"156","csci","Q99","Magnitude of largest annual storm","HB","HBUS",1
+"157","csci","Q99","Magnitude of largest annual storm","HB","UBLS",16
+"158","csci","Q99","Magnitude of largest annual storm","HB","UBUS",56
+"159","csci","Q99","Magnitude of largest annual storm","HB","UBVLS",1
+"160","csci","Q99","Magnitude of largest annual storm","NAT","HBLS",111
+"161","csci","Q99","Magnitude of largest annual storm","NAT","HBUS",20
+"162","csci","Q99","Magnitude of largest annual storm","NAT","UBLS",98
+"163","csci","Q99","Magnitude of largest annual storm","NAT","UBUS",31
+"164","csci","Q99","Magnitude of largest annual storm","NATHigh","HBLS",87
+"165","csci","Q99","Magnitude of largest annual storm","NATHigh","UBLS",298
+"166","csci","Q99","Magnitude of largest annual storm","NATHigh","UBVLS",14
+"167","csci","Q99","Magnitude of largest annual storm","NATLow","HBLS",50
+"168","csci","Q99","Magnitude of largest annual storm","NATLow","HBUS",209
+"169","csci","Q99","Magnitude of largest annual storm","NATLow","UBLS",37
+"170","csci","Q99","Magnitude of largest annual storm","NATLow","UBUS",97
+"171","csci","Q99","Magnitude of largest annual storm","NATLow","UBVLS",6
+"172","csci","Q99","Magnitude of largest annual storm","NATMed","HBLS",125
+"173","csci","Q99","Magnitude of largest annual storm","NATMed","HBUS",23
+"174","csci","Q99","Magnitude of largest annual storm","NATMed","UBLS",189
+"175","csci","Q99","Magnitude of largest annual storm","NATMed","UBUS",54
+"176","csci","Q99","Magnitude of largest annual storm","NATMed","UBVLS",8
+"177","csci","Q99","Magnitude of largest annual storm","SB0","HBLS",1
+"178","csci","Q99","Magnitude of largest annual storm","SB0","UBLS",7
+"179","csci","Q99","Magnitude of largest annual storm","SB0","UBUS",5
+"180","csci","Q99","Magnitude of largest annual storm","SB0","UBVLS",1
+"181","csci","Q99","Magnitude of largest annual storm","SB2","HBLS",2
+"182","csci","Q99","Magnitude of largest annual storm","SB2","UBLS",14
+"183","csci","Q99","Magnitude of largest annual storm","SB2","UBUS",8
+"184","csci","Q99","Magnitude of largest annual storm","SB2","UBVLS",5
+"185","csci","SP_Mag","Spring recession magnitude","HB","HBUS",2
+"186","csci","SP_Mag","Spring recession magnitude","HB","UBLS",2
+"187","csci","SP_Mag","Spring recession magnitude","HB","UBUS",71
+"188","csci","SP_Mag","Spring recession magnitude","NAT","HBLS",131
+"189","csci","SP_Mag","Spring recession magnitude","NAT","UBLS",129
+"190","csci","SP_Mag","Spring recession magnitude","NATHigh","HBLS",85
+"191","csci","SP_Mag","Spring recession magnitude","NATHigh","HBVLS",2
+"192","csci","SP_Mag","Spring recession magnitude","NATHigh","UBLS",311
+"193","csci","SP_Mag","Spring recession magnitude","NATHigh","UBVLS",1
+"194","csci","SP_Mag","Spring recession magnitude","NATLow","HBLS",7
+"195","csci","SP_Mag","Spring recession magnitude","NATLow","HBUS",252
+"196","csci","SP_Mag","Spring recession magnitude","NATLow","UBLS",10
+"197","csci","SP_Mag","Spring recession magnitude","NATLow","UBUS",130
+"198","csci","SP_Mag","Spring recession magnitude","NATMed","HBLS",148
+"199","csci","SP_Mag","Spring recession magnitude","NATMed","UBLS",251
+"200","csci","SP_Mag","Spring recession magnitude","SB0","HBLS",1
+"201","csci","SP_Mag","Spring recession magnitude","SB0","UBLS",13
+"202","csci","SP_Mag","Spring recession magnitude","SB2","HBUS",2
+"203","csci","SP_Mag","Spring recession magnitude","SB2","UBLS",22
+"204","csci","SP_Mag","Spring recession magnitude","SB2","UBUS",5
+"205","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","HBUS",2
+"206","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UBLS",30
+"207","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UBUS",41
+"208","csci","Wet_BFL_Mag_10","Wet-season low baseflow","HB","UBVLS",2
+"209","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HBLS",83
+"210","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HBUS",47
+"211","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","HBVLS",1
+"212","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UBLS",99
+"213","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UBUS",28
+"214","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NAT","UBVLS",2
+"215","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","HBLS",84
+"216","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","HBVLS",3
+"217","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","UBLS",276
+"218","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATHigh","UBVLS",36
+"219","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","HBLS",16
+"220","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","HBUS",243
+"221","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UBLS",41
+"222","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UBUS",97
+"223","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATLow","UBVLS",2
+"224","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HBLS",95
+"225","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HBUS",52
+"226","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","HBVLS",1
+"227","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UBLS",191
+"228","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UBUS",43
+"229","csci","Wet_BFL_Mag_10","Wet-season low baseflow","NATMed","UBVLS",17
+"230","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","HBUS",1
+"231","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UBLS",7
+"232","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UBUS",5
+"233","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB0","UBVLS",1
+"234","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","HBUS",2
+"235","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UBLS",6
+"236","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UBUS",16
+"237","csci","Wet_BFL_Mag_10","Wet-season low baseflow","SB2","UBVLS",5
+"238","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","HBUS",2
+"239","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","UBLS",21
+"240","csci","Wet_BFL_Mag_50","Wet-season median baseflow","HB","UBUS",52
+"241","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NAT","HBLS",131
+"242","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NAT","UBLS",129
+"243","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","HBLS",87
+"244","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","UBLS",302
+"245","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATHigh","UBVLS",10
+"246","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","HBLS",11
+"247","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","HBUS",248
+"248","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","UBLS",16
+"249","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATLow","UBUS",124
+"250","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","HBLS",148
+"251","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","UBLS",244
+"252","csci","Wet_BFL_Mag_50","Wet-season median baseflow","NATMed","UBVLS",7
+"253","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","HBLS",1
+"254","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","UBLS",12
+"255","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB0","UBVLS",1
+"256","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","HBUS",2
+"257","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","UBLS",9
+"258","csci","Wet_BFL_Mag_50","Wet-season median baseflow","SB2","UBUS",18

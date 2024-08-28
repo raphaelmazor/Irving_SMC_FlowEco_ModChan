@@ -173,7 +173,7 @@ dfsub <- df %>%
                                (Index == "csci" & Hydro_endpoint %in% sm3csci) ~ 3)) %>%
   mutate(ModelstoUse = ifelse(SmoothingFunc == ChosenSmth, "Yes", "No")) %>%
   filter(ModelstoUse == "Yes") %>%
-  filter(Quantile %in% c(0.90, 0.50, 0.30))
+  filter(Quantile %in% c(0.90, 0.50))
 
 unique(dfsub$Hydro_endpoint)
   
@@ -217,7 +217,7 @@ unique(limits$MetricCurve)
 ## organise limits by type of curve: AboveCurve, BelowCurve
 # ## 0.5s should be below, and 0.9s above - there are some exceptions in 0.5 - we'll adjust manually below
 AboveCurve <- c(0.9)
-BelowCurve <- c(0.3, 0.5)
+BelowCurve <- c(0.5)
 
 ## assign labels to know which curves are above or below thresholds
 ## some thresholds hit curve, so make sure it's NA too
@@ -235,9 +235,9 @@ MaxDel <- max(na.omit(AllDataLongx$deltah_final)) ## 8059.891
 ## Q99 and peak 5 have funky 0.3 curves, should have lower and upper limits of 0 too
 limits2 <- limits %>%
   mutate(Lower2 = ifelse(is.na(Lower) & CurveStatus == "Below", 0, Lower),
-         Upper2 = ifelse(is.na(Upper) & CurveStatus == "Below", 0, Upper)) %>%
-  mutate(Upper2 = ifelse(Hydro_endpoint == "Q99" & Quantile == 0.3 & CurveStatus == "Below" & Upper2 > 0, 0, Upper2),
-         Upper2 = ifelse(Hydro_endpoint == "Peak_5" & Quantile == 0.3 & CurveStatus == "Below"& Upper2 > 0, 0, Upper2))
+         Upper2 = ifelse(is.na(Upper) & CurveStatus == "Below", 0, Upper)) #%>%
+  # mutate(Upper2 = ifelse(Hydro_endpoint == "Q99" & Quantile == 0.3 & CurveStatus == "Below" & Upper2 > 0, 0, Upper2),
+  #        Upper2 = ifelse(Hydro_endpoint == "Peak_5" & Quantile == 0.3 & CurveStatus == "Below"& Upper2 > 0, 0, Upper2))
 
 ## if a curve is above the threshold, max value should be added 
 limits3 <- limits2 %>%
@@ -372,16 +372,15 @@ write.csv(ranges, "final_data/05_ffm_ranges.csv")
 impsx <- imps %>%
   dplyr::select(-c(Lower2, Upper2,X.1, X, Lower, Upper,MetricCurve) ) %>%
   pivot_wider(names_from = Quantile, values_from = WithinHydroLimits) %>%
-  rename(Q0.9 = "0.9", Q0.5 = "0.5", Q0.3 = "0.3") %>%
-  mutate(Result = case_when((WithinBioLimits == "Within" & Q0.9 == "Within" & Q0.5 == "Within" & Q0.3 == "Within") ~ "HVUF", ## healthy and very unlikely to be stressed 
-                            (WithinBioLimits == "Within" & Q0.9 == "Within" & Q0.5 == "Within" & Q0.3 == "NotWithin") ~ "HUF", ## healthy and unlikely to be stressed
-                            ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "Within" & Q0.3 == "Within") ~ "UHVUF", ## Unhealthy and very unlikely to be stressed
-                            ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "Within" & Q0.3 == "NotWithin") ~ "UHUF", ## Unhealthy and unlikely to be stressed 
-                            ( WithinBioLimits == "Within"& Q0.9 == "Within" & Q0.5 == "NotWithin" & Q0.3 == "NotWithin") ~ "HMF", ## healthy, mod likely to be stressed
-                            ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "NotWithin" & Q0.3 == "NotWithin") ~ "UHMF", ## unhealthy, mod likely to be stressed
-                            ( WithinBioLimits == "Within" & Q0.9 == "NotWithin" & Q0.5 == "NotWithin"& Q0.3 == "NotWithin") ~ "HLF", ## healthy, very likely to be stressed
-                            ( WithinBioLimits == "NotWithin" & Q0.9 == "NotWithin" & Q0.5 == "NotWithin"& Q0.3 == "NotWithin") ~ "UHLF")) %>% ## unhealthy, very likely to be stressed
-  mutate(Result = factor(Result, levels = c("HVUF", "HUF","UHVUF", "UHUF", "HMF", "UHMF", "HLF", "UHLF"))) # %>%
+  rename(Q0.9 = "0.9", Q0.5 = "0.5") %>%
+  mutate(Result = case_when((WithinBioLimits == "Within" & Q0.9 == "Within" & Q0.5 == "Within") ~ "HBUS", ## healthy and unlikely to be stressed
+                            # ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "Within" & Q0.3 == "Within") ~ "UHVUF", ## Unhealthy and very unlikely to be stressed
+                            ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "Within") ~ "UBUS", ## Unhealthy and unlikely to be stressed 
+                            ( WithinBioLimits == "Within"& Q0.9 == "Within" & Q0.5 == "NotWithin") ~ "HBLS", ## healthy,  likely to be stressed
+                            ( WithinBioLimits == "NotWithin" & Q0.9 == "Within" & Q0.5 == "NotWithin") ~ "UBLS", ## unhealthy, mod likely to be stressed
+                            ( WithinBioLimits == "Within" & Q0.9 == "NotWithin" & Q0.5 == "NotWithin") ~ "HBVLS", ## healthy, very likely to be stressed
+                            ( WithinBioLimits == "NotWithin" & Q0.9 == "NotWithin" & Q0.5 == "NotWithin") ~ "UBVLS")) %>% ## unhealthy, very likely to be stressed
+  mutate(Result = factor(Result, levels = c( "HBUS", "UBUS", "HBLS", "UBLS", "HBVLS", "UBVLS"))) # %>%
   
 unique(imps$Hydro_endpoint)
   ## check NAs

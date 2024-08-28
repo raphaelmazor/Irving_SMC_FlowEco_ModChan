@@ -76,7 +76,7 @@ FinalTable <- FinalTablex %>%
   # filter(SmoothingFunc == 6) %>% ## change later!
   pivot_wider(names_from = Impact, values_from = PercentageOfSites) %>%
   mutate(across(everything(), .fns = ~replace_na(.,0))) %>%
-  select(Index:ModifiedClass, UHVUF, HUF, UHUF, HMF, UHMF, HLF, UHLF)
+  select(Index:ModifiedClass, HBUS, UBUS, HBLS, UBLS, HBVLS, UBVLS)
 
 ## join number of sites
 
