@@ -870,3 +870,29 @@ T1
 
 file.name1 <- paste0(out.dir, "08_DS_Baseflow_Conceptual_GAM_Curve_updatedSites.jpg")
 ggsave(T1, filename=file.name1, dpi=300, height=5, width=7.5)
+
+
+# Check spring recession --------------------------------------------------
+names(DF)
+
+unique(DF$Variable)
+## look at sp mag predictions
+
+DFSp <- DF %>%
+  filter(Variable =="d_sp_mag", Quant %in% c(0.5,0.9), Smooths == 3)
+
+## look at raw data
+
+head(AllDatax)
+
+allDataSp <- AllDatax %>%
+  filter(hydro.endpoints == "SP_Mag") %>%
+  select(masterid, MetricValue, channel_engineering_class, county, deltah_final, flow_metric) %>%
+  distinct()
+
+
+
+
+
+
+
