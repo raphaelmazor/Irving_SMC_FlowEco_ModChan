@@ -1,0 +1,28 @@
+Functional Flow Metric,Model,DevianceExplained,RSquared,df,AIC
+Spring recession magnitude,Intercept Only,0.39268031,0.388383036,7.978154808,-452.755589
+Spring recession magnitude,Slope Only,0.074896699,0.068974222,7.540880124,-106.0079689
+Spring recession magnitude,Slope and Intercept,0.40,0.39,10.70,-454.71
+"Peak Flow Magnitude (Q99, cfs)",Intercept Only,0.38981347,0.385746396,7.771594199,-449.2787683
+"Peak Flow Magnitude (Q99, cfs)",Slope Only,0.07075062,0.064349813,7.948898989,-101.4982792
+"Peak Flow Magnitude (Q99, cfs)",Slope and Intercept,0.39,0.39,10.34,-450.97
+Dry-season median baseflow,Intercept Only,0.41947748,0.413569889,10.59641587,-484.7937457
+Dry-season median baseflow,Slope Only,0.272626756,0.265686766,10.15891771,-299.396529
+Dry-season median baseflow,Slope and Intercept,0.43,0.43,14.62,-496.60
+Fall pulse magnitude,Intercept Only,0.417624399,0.411657738,10.78612921,-481.7818504
+Fall pulse magnitude,Slope Only,0.302740026,0.295549625,10.66119086,-333.316433
+Fall pulse magnitude,Slope and Intercept,0.42,0.41,13.21,-481.93
+10-year flood magnitude,Intercept Only,0.406684087,0.400773576,10.70937591,-466.5623478
+10-year flood magnitude,Slope Only,0.165606736,0.157479093,10.53489646,-185.2636138
+10-year flood magnitude,Slope and Intercept,0.41,0.40,10.72,-466.55
+2-year flood magnitude,Intercept Only,0.42809766,0.422472322,10.22928037,-497.8852671
+2-year flood magnitude,Slope Only,0.077657517,0.068814158,10.59119425,-102.3760875
+2-year flood magnitude,Slope and Intercept,0.43,0.42,10.23,-497.88
+5-year flood magnitude,Intercept Only,0.404244765,0.398497993,10.46222438,-463.6676476
+5-year flood magnitude,Slope Only,0.126808636,0.118134347,10.76416629,-147.2634534
+5-year flood magnitude,Slope and Intercept,0.40,0.40,10.46,-463.67
+Wet-season low baseflow,Intercept Only,0.421882503,0.415823669,10.90064701,-487.6143935
+Wet-season low baseflow,Slope Only,0.16895572,0.161071262,10.67658059,-188.3022123
+Wet-season low baseflow,Slope and Intercept,0.42,0.42,12.95,-486.20
+Wet-season median baseflow,Intercept Only,0.40199033,0.395999573,10.72566749,-460.0209425
+Wet-season median baseflow,Slope Only,0.088116642,0.078886342,10.85178464,-111.2750449
+Wet-season median baseflow,Slope and Intercept,0.40,0.40,10.73,-460.02

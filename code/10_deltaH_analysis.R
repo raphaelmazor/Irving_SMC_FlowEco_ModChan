@@ -114,6 +114,130 @@ find_delta_h_optimize <- function(target_csci_score, model, lower, upper, observ
 ## save 
 save(find_delta_h_optimize, file = "code/functions/10_find_deltaH.Rdata")
 
+## for mixed models
+## function to get delta H at csci score - optimizing for observed values
+find_delta_h_optimize_mm <- function(target_csci_score, model, lower, upper, observed_delta_h, channel_class = NULL) {
+  # Define the objective function with a secondary criterion
+  objective_function <- function(deltah_final) {
+    # Prepare newdata based on whether channel_class is provided
+    newdata <- if (!is.null(channel_class)) {
+      # Random effects GAM
+      data.frame(deltah_final = deltah_final, channel_engineering_class = channel_class)
+    } else {
+      # Standard GAM
+      data.frame(deltah_final = deltah_final)
+    }
+    
+    # Make the prediction
+    predicted_csci <- predict(model, newdata = newdata)
+    diff_csci <- abs(predicted_csci - target_csci_score)  # Primary objective: absolute difference from target
+    
+    # Secondary criterion: distance from observed_delta_h
+    diff_reference <- abs(deltah_final - observed_delta_h)
+    
+    # Combine objectives: prioritize csci match, then proximity to reference point
+    diff_csci + 0.001 * diff_reference  # Small weight on reference distance
+  }
+  
+  # Optimize for negative delta_h range
+  result_negative <- optimize(objective_function, lower = lower, upper = 0)
+  delta_h_negative <- result_negative$minimum
+  
+  # Split the positive range and optimize each part
+  midpoint <- (upper + 0) / 2
+  result_positive_1 <- optimize(objective_function, lower = 0, upper = midpoint)
+  result_positive_2 <- optimize(objective_function, lower = midpoint, upper = upper)
+  
+  # Choose the best result for positive delta_h based on objective values
+  if (result_positive_1$objective < result_positive_2$objective) {
+    delta_h_positive <- result_positive_1$minimum
+  } else {
+    delta_h_positive <- result_positive_2$minimum
+  }
+  
+  # Return both results
+  list(delta_h_negative = delta_h_negative, delta_h_positive = delta_h_positive)
+}
+
+## save 
+save(find_delta_h_optimize_mm, file = "code/functions/10_find_deltaH_mixed_model.Rdata")
+
+find_delta_h_exact <- function(deltah_final, model, target_csci_score, channel_class = NULL) {
+  # Predict CSCI scores based on the model
+  predict_csci <- function(deltah_values) {
+    # Prepare newdata for prediction
+    newdata <- if (!is.null(channel_class)) {
+      data.frame(deltah_final = deltah_values, channel_engineering_class = channel_class)
+    } else {
+      data.frame(deltah_final = deltah_values)
+    }
+    predict(model, newdata = newdata)
+  }
+  
+  # Get predicted CSCI scores for the provided deltah_final
+  predicted_csci <- predict_csci(deltah_final)
+  
+  # Ensure deltah_final and predicted_csci are sorted
+  if (is.unsorted(deltah_final)) {
+    ind <- order(deltah_final)
+    deltah_final <- deltah_final[ind]
+    predicted_csci <- predicted_csci[ind]
+  }
+  
+  # Root function to find intersections
+  root_function <- function(x, y, y0 = 0) {
+    z <- y - y0
+    # Identify segments where the sign of z changes
+    k <- which(z[-1] * z[-length(z)] < 0)
+    # Calculate roots analytically
+    xk <- x[k] - z[k] * (x[k + 1] - x[k]) / (z[k + 1] - z[k])
+    xk
+  }
+  
+  # Find all roots where predicted_csci crosses the target CSCI score
+  roots <- root_function(deltah_final, predicted_csci, y0 = target_csci_score)
+  
+  # Function to find closest positive and negative roots
+  find_closest_values <- function(values_list) {
+    # Sort the list based on absolute values
+    sorted_list <- values_list[order(abs(values_list))]
+    
+    # Initialize variables to store the delta_h negative and positive values
+    delta_h_negative <- NA
+    delta_h_positive <- NA
+    
+    # Iterate through the sorted list to find the delta_h negative and positive values
+    for (value in sorted_list) {
+      if (value < 0 && is.na(delta_h_negative)) {
+        delta_h_negative <- value
+      } else if (value > 0 && is.na(delta_h_positive)) {
+        delta_h_positive <- value
+      }
+      # Break the loop if both values are found
+      if (!is.na(delta_h_negative) && !is.na(delta_h_positive)) {
+        break
+      }
+    }
+    
+    # Handle cases where there are only negative or only positive values
+    if (all(values_list < 0)) {
+      delta_h_positive <- NA
+    } else if (all(values_list > 0)) {
+      delta_h_negative <- NA
+    }
+    
+    return(list(delta_h_negative = delta_h_negative, delta_h_positive = delta_h_positive))
+  }
+  
+  # Find the delta_h negative and positive values from the roots
+  delta_h_values <- find_closest_values(roots)
+  
+  # Return the results
+  return(delta_h_values)
+}
+
+## save 
+save(find_delta_h_exact, file = "code/functions/10_find_deltaH_exact_values.Rdata")
 
 # Example usage with dynamic lower and upper
 # target_csci_score <- 0.5  # target csci_score
@@ -163,13 +287,13 @@ find_intersections <- function(target_y, model, data) {
 }
 
 # Example usage
-target_y <- 0.4  # Replace with your target Y-value for intersections
-data <- mod$model$deltah_final
-data
-mod$model$deltah_final
-# Assuming `model` is already defined and `data` contains the delta_h column
-intersection_points <- find_intersections(target_y, mod , data)
-print(intersection_points)
+# target_y <- 0.4  # Replace with your target Y-value for intersections
+# data <- mod$model$deltah_final
+# data
+# mod$model$deltah_final
+# # Assuming `model` is already defined and `data` contains the delta_h column
+# intersection_points <- find_intersections(target_y, mod , data)
+# print(intersection_points)
 
 
 # Upload Site data ---------------------------------------------------
@@ -232,12 +356,12 @@ for(f in 1:length(ffms)) {
     
     ## use function to predict delta H for both neg and pos values
     predicted_delta_h <- find_delta_h_optimize(target_csci_score, mod, min(FFMDf$deltah_final), max(FFMDf$deltah_final), siteDelta)
-    RootLinearInterpolant
+    
     ## add to main df
     FFMDf$newDelta[s] <- ifelse(siteDelta > 0, predicted_delta_h$delta_h_positive, predicted_delta_h$delta_h_negative)
 
   }
-  
+  head(FFMDf)
   FFMDf <- FFMDf %>%
     mutate(ChangeInDeltaINC = deltah_final - newDelta) %>% ## absolute change in delta for inc 
     mutate(ChangeInDeltaINC = round(ChangeInDeltaINC, digits = 2)) %>%
@@ -247,7 +371,6 @@ for(f in 1:length(ffms)) {
   ## delta H will either be within the limits or out.
   ## if it is within, then issue is likely not flow
   ## if it is outside then can calculate change in flow needed for an improved score
-  
   
   ## join site to ffm limits data by ffm and threshold
   
@@ -602,18 +725,47 @@ for(m in 1:length(metrics)) {
 
 
 
+# Comparing to Natural Flows ----------------------------------------------
 
+## load change in delta
+data <- read.csv("final_data/10_Change_in_delta_to_hit_thresholds.csv")
+head(data)
 
-# Upload Mixed GAM Model --------------------------------------------------
+# Type X Healthy
+# Type A Unhealthy, flow not altered
+# Type B Can reach ref DH within 10% 
+# Type C Can reach BO with 10%
+# Type D Can reach Inc (0.1) with 10% 
+# Type E Can't achieve inc improvement with 10%
 
-## data
-load(file = "final_data/01_bugs_algae_flow_joined_by_masterid.RData") 
+## get categories
+categories <- data %>%
+  mutate(
+    Categories = case_when(
+      HealthyCSCI == "Yes" ~ "Type X",
+      NoFlowProblem == "Yes" & HealthyCSCI == "No" ~ "Type A",
+      Threshold == "NAT" & RelChangeInDelta <= 10 ~ "Type B",
+      ChannelType != "NAT" & RelChangeInDelta <= 10 ~ "Type C",
+      RelChangeInDeltaINC <= 10 ~ "Type D",
+      TRUE ~ "Type E"  # Assign NA if none of the conditions are met
+    )
+  )
 
-## remove SB1
-AllDataLongx <- AllData %>%
-  dplyr::filter(!channel_engineering_class == "SB1")
-head(AllDataLongx)
+view(categories)
+head(categories)
 
+## if type X or A add deltah_final to change in delta - but maybe just NA as these don't matter in analysis
+## if type B or C - add deltah_final to change in delta
+## if type D - new delta
+## if type E - NA
+## then add on 50th percentile of natural flows
+## and see if its between the 10th and 90th percentile
 
+categoriesDF <- categories %>%
+  select(masterid:ChannelType, Threshold, BioThresh, Categories, newDelta, ChangeInDelta)   %>%
+  mutate(AdjustedDelta = ifelse(Categories == "Type D", newDelta, (deltah_final+ChangeInDelta))) %>%
+  mutate(AdjustedDelta = ifelse(Categories == "Type E", NA, AdjustedDelta)) 
 
+categoriesDF
 
+write.csv(categoriesDF, "final_data/10_change_in_delta_current_delta.csv")

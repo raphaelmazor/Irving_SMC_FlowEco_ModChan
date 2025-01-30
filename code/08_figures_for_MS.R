@@ -4,7 +4,6 @@ library(tidyverse)
 library(sf)
 library(tidylog)
 
-
 # FFM boxplots ------------------------------------------------------------
 
 ## directory for figures

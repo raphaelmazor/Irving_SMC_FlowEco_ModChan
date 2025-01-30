@@ -1,0 +1,63 @@
+---
+title: "FFM"
+author: "Megan W"
+date: "2025-01-21"
+output: html_document
+---
+
+```{r packages}
+library(tidyverse)
+library(dplyr)
+library(RPostgreSQL)
+```
+
+
+```{r Data}
+#read in csvs from change in delta speadsheet (ffm_data) and natural flows database (ffm_comid_nat)
+ffm_data <- read.csv("C:/Users/Gisuser/SCCWRP/Staff - Data/PartTimers/MeganWarren/FFM_calc/10_change_in_delta_current_delta.csv")
+ffm_comid_nat <- read.csv("C:/Users/Gisuser/SCCWRP/Staff - Data/PartTimers/MeganWarren/FFM_calc/ffm-final-v1.2.1.csv")
+
+#access SMC database to match masterids and comids
+con2 <- dbConnect ( RPostgreSQL::PostgreSQL(), user='smcread', password='1969$Harbor', host='geobiology.cottkh4djef2.us-west-2.rds.amazonaws.com', dbname='smc')
+
+tables <- dbListTables(con2)
+tables <- as.data.frame(tables)
+
+lu_stations <- dbGetQuery(con2, "SELECT * FROM lu_stations")
+```
+
+
+```{r Organize data}
+#filter for desired rows/ and columns
+ffm_comid_nat.2 <- ffm_comid_nat %>% 
+  filter(unit == "cfs") %>% 
+  select(comid, ffm, wyt, p10, p50, p90) %>% 
+  mutate(ffm = case_when(ffm=="ds_mag_50"~"DS_Mag_50",          #change ffm column to match hydro.endpoint column
+                         ffm=="ds_mag_90"~"DS_Mag_90",
+                         ffm=="fa_mag"~"FA_Mag",
+                         ffm=="peak_10"~"Peak_10",
+                         ffm=="peak_5"~"Peak_5",
+                         ffm=="peak_2"~"Peak_2",
+                         ffm=="sp_mag"~"SP_Mag",
+                         ffm=="wet_bfl_mag_10"~"Wet_BFL_Mag_10",
+                         ffm=="wet_bfl_mag_50"~"Wet_BFL_Mag_50"))
+
+ffm_comid_nat.2$comid <- as.character(ffm_comid_nat.2$comid) 
+
+#join to lustations by comid to get masterid
+ffm_comid_nat.3 <- ffm_comid_nat.2 %>% 
+  full_join(lu_stations[, c("masterid","comid")], by = "comid")
+
+#join natural flow data with ffm spreadsheet
+ffm_data.2 <- ffm_data %>%
+  left_join(ffm_comid_nat.3, by = c("masterid", "hydro.endpoints" = "ffm"))
+```
+```{r Calculations}
+ffm_data.3 <- ffm_data.2 %>% 
+  mutate(CurrentCFS = p50 + AdjustedDelta) %>% 
+  mutate(WithinNaturalRange = if_else(CurrentCFS < p90 & CurrentCFS > p10, "yes", "no"))
+```
+
+```{r}
+write.csv(ffm_data.3, "C:\\Users\\Gisuser\\SCCWRP\\Staff - Data\\PartTimers\\MeganWarren\\FFM_calc\\change_in_delta_range.csv")
+```

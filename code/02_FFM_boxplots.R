@@ -18,15 +18,15 @@ head(AllData)
 
 AllDatax <- AllData %>%
   drop_na(channel_engineering_class) %>% ## remove sites with no channel class
-  mutate(channel_engineering_class = recode_factor(channel_engineering_class, NAT = "Natural", SB0 = "Soft Bottom (no hard sides)",
-                                                   SB1 = "Soft Bottom (1 hard side)", SB2 = "Soft Bottom (2 hard sides)", 
-                                                   HB = "Hard Bottom")) ## change names
+  mutate(channel_engineering_class = recode_factor(channel_engineering_class, NAT = "NAT", SB0 = "SB",
+                                                   SB1 = "NAT", SB2 = "SB", 
+                                                   HB = "HB")) ## change names
 ## check names
 unique(AllDatax$channel_engineering_class)
 
 ## box plot of Ranges
 m=1
-
+m 
 ## define metrics
 mets <- unique(na.omit(AllDatax$Flow.Metric.Name))
 mets
@@ -35,16 +35,23 @@ mets
 for(m in 1:length(mets)) {
   
   ## boxplot
-  T1 <- (ggplot(subset(AllDatax, Flow.Metric.Name == mets[m]),  aes(x=channel_engineering_class, y=deltah_final)) +
+  T1 <- (ggplot(subset(AllDatax, Flow.Metric.Name == mets[m]),  aes(x=channel_engineering_class, y=deltah_final, fill = channel_engineering_class )) +
            geom_boxplot() +
            scale_x_discrete(name=paste("")) +
-           scale_y_continuous(name = paste0("Delta: ", mets[m])))
+           scale_fill_manual(values=c("chartreuse4",  "mediumpurple2", "firebrick3"))+
+           scale_y_continuous(name = paste0(mets[m])) +
+           theme_classic() +
+           theme(legend.title = element_blank(), 
+                 legend.position = "none",
+                 legend.text=element_text(size=15),
+                 axis.text = element_text(size = 15),
+                 axis.title = element_text(size = 15))) 
   
   
   T1
   
   file.name1 <- paste0(out.dir, "02_", mets[m], "_boxplot_delta_range.jpg")
-  ggsave(T1, filename=file.name1, dpi=300, height=5, width=7.5)
+  ggsave(T1, filename=file.name1, dpi=300, height=8, width=10)
 }
 
 ## jitter plot: height to be 0, unchanges, changed below a therehold, changed above a threshold. delta h limits below critical 

@@ -212,7 +212,7 @@ limits <- limits %>%
   pivot_wider(names_from = Type, values_from = DeltaH)  %>%
   mutate(MetricCurve = paste0(metric,"_", SmoothingFunc, "_", Quantile))
 
-unique(limits$MetricCurve)
+unique(limits$Threshold)
 
 ## organise limits by type of curve: AboveCurve, BelowCurve
 # ## 0.5s should be below, and 0.9s above - there are some exceptions in 0.5 - we'll adjust manually below
