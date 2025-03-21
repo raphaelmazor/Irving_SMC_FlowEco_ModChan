@@ -111,8 +111,8 @@ for(f in 1:length(ffms)) {
     filter(flow_metric == ffms[f]) %>%
     distinct() %>%
     select(masterid, sampleyear, MetricValue, deltah_final, hydro.endpoints, channel_engineering_class) %>%
-    drop_na(MetricValue)
-  
+    drop_na(MetricValue)  
+
   ## get ffm from bio summary
   
   ffmIndex <- Med_GAM_models %>%
@@ -143,15 +143,14 @@ for(f in 1:length(ffms)) {
     ChanEng <- FFMDf[s,"channel_engineering_class"] ## get adjusted csci
     target_csci_score_INC <-  siteIncr  #  target csci_score - predicted csci increased by 0.1
     
-    ## use function to predict delta H for both neg and pos values
-    predicted_delta_h <- find_delta_h_optimize_mm(target_csci_score, mod, min(FFMDf$deltah_final), max(FFMDf$deltah_final), siteDelta, ChanEng)
+    ## use function to predict delta H for both neg and pos values for INC
+    predicted_delta_h <- find_delta_h_optimize_mm(target_csci_score_INC, mod, min(FFMDf$deltah_final), max(FFMDf$deltah_final), siteDelta, ChanEng)
    
     ## add to main df## aFFMDfdd to main df
     FFMDf$newDeltaINC[s] <- ifelse(siteDelta > 0, predicted_delta_h$delta_h_positive, predicted_delta_h$delta_h_negative)
     
   }
   
-
   FFMDf <- FFMDf %>%
     mutate(newDeltaINC = round(newDeltaINC, digits = 2)) %>%
     mutate(ChangeInDeltaINC = deltah_final - newDeltaINC) %>% ## absolute change in delta for inc 
@@ -371,7 +370,7 @@ categories <- ImpNeeded
 # view(categories) 
 
 ## save 
-write.csv(categories, "final_data/12_categories_Mixed_Model.csv")
+write.csv(categories, "ignore/12_categories_Mixed_Model.csv")
 head(categories)
 str(ChangeDxWide)
 
@@ -387,13 +386,22 @@ categoriesx <- categories %>%
   mutate(Match = ifelse(sampleyear2 == sampleyear, "Yes", "No")) %>%
   filter(Match == "Yes") %>%
   dplyr::select(-sampleyear2, -Match) %>% ## remove original score
-  distinct()
+  distinct() %>%
+  mutate(TotalSitesCT = case_when(
+    ChannelType %in% c("SB0", "SB2") ~ 43,
+    ChannelType %in% c("SB1", "NAT") ~ 279,
+    ChannelType %in% c("HB") ~ 74
+  ))
 
-write.csv(categoriesx, "final_data/12_categories_Mixed_Model.csv")
+write.csv(categoriesx, "ignore/12_categories_Mixed_Model.csv")
 
 ## count catergories per channel type
 names(categoriesx)
 length(unique(categoriesx$masterid)) ## 396
+
+## should the total sites be sites in each channel class?
+
+
 
 ## tally per channel type and target 
 tallyCats1 <- categoriesx %>%
@@ -407,7 +415,8 @@ tallyCats1 <- categoriesx %>%
   group_by(ChannelType, hydro.endpoints,Target, Categories) %>% # add categories gto group
   mutate(Tally = length(unique(masterid))) %>% # count sites per category
   mutate(PercentSites = Tally/TotalSites*100) %>% ## get percentages
-  select(Tally, TotalSites, PercentSites) %>% ## remove cols
+  mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
+  select(Tally, TotalSites, PercentSites, PercentSitesCT) %>% ## remove cols
   distinct() %>%
   drop_na(ChannelType)
 
@@ -421,7 +430,8 @@ tallyCatsOV <- categoriesx %>%
   group_by(hydro.endpoints, Target, Categories) %>% ## group by ffm and cats
   mutate(Tally = length(unique(masterid))) %>% ## count sites for each ffm and cat
   mutate(PercentSites = Tally/TotalSites*100) %>% ## percentage per ffm and cat
-  select(Tally, TotalSites, PercentSites) %>%
+  mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
+  select(Tally, TotalSites, PercentSites, PercentSitesCT) %>%
   mutate(ChannelType = "All") %>%
   distinct() %>%
   drop_na(ChannelType)
@@ -446,39 +456,13 @@ unique(tallyCats$Categories)
 range(tallyCats$PercentSites)
 
 ## save
-write.csv(tallyCats, "final_data/12_tally_categories_per_target_for_figures_V2.csv")
-unique(categoriesx1$ChannelType)
-unique(categoriesx1$Flow.Metric.Name)
+write.csv(tallyCats, "ignore/12_tally_categories_per_target_for_figures_V2.csv")
 
-## tally per channel type and target - sites can be in more than category so use length(masterid) not unique
+
+## tally per channel type and category - sites are in more than one category so use length(masterid) not unique
 ## OR take best target per category
-head(categoriesxRed)
-unique(categoriesxRed$ChannelType)
 
-# categoriesxRed <- categoriesx %>%
-#   select(-c(RelChangeInDeltaINC, BioStatus:Modified, MaxScore)) %>%
-#   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>% ## make long
-#   drop_na(Categories) %>% ## remove NAs - sites that are below or above BO csci but within BO flows - focus on INC and ref improvement
-#   mutate(Target = factor(Target, levels = c("RefImprovement", "BOImprovement", "INCImprovement"),
-#                        labels = c("Reference Condition", "Best Observed Condition", "Incremental Improvement"))) %>%
-#   filter(!Categories %in% c("No Action", "Non-flow related")) %>% ## keep only categoried sites for now
-#   group_by(masterid, hydro.endpoints, Categories) %>% # group
-#   mutate(Target2 = first(Target))# %>% ## some INc taken instead of BO cond
-#   mutate(BioThresh = case_when( ## add threshold value
-#     ChannelType == "HB" ~ 0.67,
-#     ChannelType == "NAT" ~ 0.79,
-#     ChannelType == "SB0" ~ 0.78,
-#     ChannelType == "SB1" ~ 0.79,
-#     ChannelType == "SB2" ~ 0.75
-#   )) %>% ## take last when incremental increase is less than BO
-#   mutate(Target3 = ifelse(Target2 != "Reference Condition" & csci_Incr < BioThresh, last(Target), Target2)) %>%
-#   mutate(Target2 = case_when(
-#     Target3 == 1 ~ "Reference Condition",
-#     Target3 == 2 ~ "Best Observed Condition",
-#     Target3 == 3 ~ "Incremental Improvement",
-#   )) %>%
-#   select(-Target, -Target3)
- 
+
 ## count sites per category
 tallyCats1c <- categoriesx %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>% ## make long
@@ -486,10 +470,11 @@ tallyCats1c <- categoriesx %>%
   mutate(ChannelType = ifelse(ChannelType %in% c("SB0", "SB2"), "SB", ChannelType)) %>% ## add SB2 & 0 together
   mutate(ChannelType = ifelse(ChannelType %in% c("NAT", "SB1"), "NAT", ChannelType)) %>% ## add SB1 &NAT together
   group_by(ChannelType, hydro.endpoints, Categories) %>% ## group
-  mutate(TotalSites = length(masterid)) %>% ## get total n sites
+  mutate(TotalSites = length(unique(masterid))) %>% ## get total n sites
   group_by(ChannelType, hydro.endpoints,Target, Categories) %>% # add categories gto group
-  mutate(Tally = length(masterid)) %>% # count sites per category
+  mutate(Tally = length(unique(masterid))) %>% # count sites per category
   mutate(PercentSites = Tally/TotalSites*100) %>% ## get percentages
+  # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
   select(Tally, TotalSites, PercentSites) %>% ## remove cols
   distinct() %>%
   drop_na(ChannelType)
@@ -500,10 +485,11 @@ tallyCatsOVc <- categoriesx %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>%
   drop_na(Categories) %>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
   group_by(hydro.endpoints, Categories) %>%
-  mutate(TotalSites = length(masterid)) %>% ## get total sites for overall column
+  mutate(TotalSites = length(unique(masterid))) %>% ## get total sites for overall column
   group_by(hydro.endpoints, Target, Categories) %>% ## group by ffm and cats
-  mutate(Tally = length(masterid)) %>% ## count sites for each ffm and cat
+  mutate(Tally = length(unique(masterid))) %>% ## count sites for each ffm and cat
   mutate(PercentSites = Tally/TotalSites*100) %>% ## percentage per ffm and cat
+  # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
   select(Tally, TotalSites, PercentSites) %>%
   mutate(ChannelType = "All") %>%
   distinct() %>%
@@ -525,21 +511,33 @@ tallyCats2c <- tallyCats2c %>%
                         labels = c("Reference Condition", "Best Observed Condition", "Incremental Improvement")))
 tallyCats2c
 ## save
-write.csv(tallyCats2c, "final_data/12_tally_categories_per_category_for_figures_V2.csv")
+write.csv(tallyCats2c, "ignore/12_tally_categories_per_category_for_figures_V2.csv")
 
 # Figures -----------------------------------------------------------------
+
+## number of sites per category
+
+nSites <- categoriesx %>%
+  ungroup() %>%
+  select(masterid, ChannelType) %>%
+  distinct() %>%
+  group_by(ChannelType) %>%
+  tally()
+
+nSites 
 
 head(tallyCats)
 ## plot all FFM per Target - bars rep improvement categories
 
 tars <- unique(tallyCats$Target)
-
+tars
+t=1
 for(t in 1:length(tars)) {
   
   ## filter to target
   tallyCatsx <- tallyCats %>%
-    filter(Target == tars[t])
-  
+    filter(Target == tars[t], !ChannelType == "All") 
+  tallyCatsx
   ## plot
   a1 <- ggplot(tallyCatsx, aes(fill=Categories, y=PercentSites, x=ChannelType)) + 
     geom_bar(position="stack", stat="identity") +
@@ -547,7 +545,16 @@ for(t in 1:length(tars)) {
     scale_fill_manual(values=hcl.colors(n=5, palette = "Zissou 1"))+ ## colour of points
     facet_wrap(~Flow.Metric.Name) +
     # scale_fill_manual(values=catPal)+
-    scale_x_discrete(name = "") +
+    theme(legend.title = element_blank(), 
+          legend.position = "bottom",
+          legend.text=element_text(size=15),
+          plot.title = element_text(size = 15),
+          axis.text = element_text(size = 15),
+          axis.title.y = element_text(size = 15),
+          strip.text.x = element_text(size = 15),
+          strip.text.y = element_text(size = 15)) +
+    scale_x_discrete(name = "", labels = label_wrap(4)) +
+    # scale_x_discrete(name = "") +
     scale_y_continuous(name = "Sites (%)")
   
   a1
@@ -559,6 +566,9 @@ for(t in 1:length(tars)) {
 
 ## plot per categories - bars rep target achievable
 cats <- unique(tallyCats2c$Categories)
+cats
+c=1
+library(scales)
 
 for(c in 1:length(cats)) {
   
@@ -567,21 +577,28 @@ for(c in 1:length(cats)) {
     filter(Categories == cats[c])
 
   ## plot
-  a1 <- ggplot(data, aes(fill=Target, y=PercentSites, x=ChannelType)) + 
+  a1 <- ggplot(data, aes(fill=Target, y=Tally, x=ChannelType)) + 
     geom_bar(position="stack", stat="identity") +
     # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
     scale_fill_manual(values=hcl.colors(n=3, palette = "Zissou 1"))+ ## colour of points
-    facet_wrap(~Flow.Metric.Name) +
+    facet_wrap(~Flow.Metric.Name, scales = "free_y") +
     # scale_fill_manual(values=catPal)+
-    scale_x_discrete(name = "") +
-    scale_y_continuous(name = "Sites (%)")
+    theme(legend.title = element_blank(), 
+          legend.position = "bottom",
+          legend.text=element_text(size=15),
+          plot.title = element_text(size = 15),
+          axis.text = element_text(size = 15),
+          axis.title.y = element_text(size = 15),
+          strip.text.x = element_text(size = 15),
+          strip.text.y = element_text(size = 15)) +
+    scale_x_discrete(name = "", labels = label_wrap(4)) +
+    scale_y_continuous(name = "Sites (n)")
   a1
   
   file.name1 <- paste0(out.dir, "12_", cats[c], "_category_mixed_mod_percent_sites.jpg")
   ggsave(a1, filename=file.name1, dpi=600, height=7, width=12)
   
 }
-
 
 ## spatial figures
 
@@ -596,14 +613,18 @@ coords <- AllData %>%
 
 ### add to categories df
 
-categoriesSP <- categories2 %>%
+categoriesSP <- categoriesx %>%
   inner_join(coords, by = "masterid") %>%
   st_as_sf(coords=c( "longitude", "latitude"), crs=4326, remove=F) %>% ## make spatial
-  filter(!Categories %in% c("Type X", "Type X2")) %>% ## remove healthy sites
+  # filter(!Categories %in% c("Type X", "Type X2")) %>% ## remove healthy sites
   drop_na(ChannelType) %>% ## remove NAs
   mutate(ChannelType = factor(ChannelType, levels = c("NAT", "SB1", "SB0", "SB2", "HB"),
                               labels = c("NAT & SB1", "NAT & SB1", "SB0 & SB2","SB0 & SB2", "HB"))) %>% ## make channel type a factor
-  inner_join(labels, by = "hydro.endpoints") ## join with formal names
+  inner_join(labels, by = "hydro.endpoints") %>% ## join with formal names
+  pivot_longer(RefImprovement:BOImprovement, names_to = "Goal", values_to = "Categories") %>%
+  mutate(Categories = factor(Categories, 
+                                 levels = c("No Action", "Non-flow related","Less than 10%","10 - 50%","Over 50%")))
+
 ## upload ca boundary
 
 ca_sf <- st_read("ignore/SpatialData/California/Ca_State_poly.shp")
@@ -633,18 +654,31 @@ metrics <- unique(categoriesSP$hydro.endpoints)
 metrics
 m=1
 
+goals <- unique(categoriesSP$Goal)
+goals
 head(categoriesSP)
-## loop
+g=1
+## loop goals
+
+for(g in 1:length(goals)) {
+  
+  ## extract goal
+  CatsG <- categoriesSP %>%
+    filter(Goal == goals[g]) 
+  
+
+## loop ffms
 for(m in 1:length(metrics)) {
   
   ## extract metric
-  CatsFFM <- categoriesSP %>%
-    filter(hydro.endpoints == metrics[m])
+  CatsFFM <- CatsG %>%
+    filter(hydro.endpoints == metrics[m]) 
+    
   
   ## get metric fancy name
   metName <- CatsFFM$Flow.Metric.Name[1]
   
-  CatsFFM
+
 
     ## plot
     m1 <- ggplot()+
@@ -654,7 +688,7 @@ for(m in 1:length(metrics)) {
       geom_sf(data=counties_socal_sf, fill=NA)+ ## counties
       geom_sf(data=CatsFFM,aes(colour = Categories), size = 2) + ## results
       # scale_colour_manual(values=c("chartreuse4", "dodgerblue2", "mediumpurple2", "firebrick3"))+
-      scale_colour_manual(values=hcl.colors(n=6, palette = "Zissou 1"))+ ## colour of points
+      scale_colour_manual(values=hcl.colors(n=5, palette = "Zissou 1"))+ ## colour of points
       coord_sf(xlim=c(-119.41,-116.4),
                ylim=c(32.5, 34.8),
                crs=4326) +
@@ -662,71 +696,26 @@ for(m in 1:length(metrics)) {
       labs(title = paste(metName)) +
       theme(legend.title = element_blank(), 
             legend.position = "bottom",
-            legend.text=element_text(size=15),
-            plot.title = element_text(size = 15),
-            axis.text = element_text(size = 8),
-            strip.text.x = element_text(size = 15),
-            strip.text.y = element_text(size = 15)) +
+            legend.text=element_text(size=18),
+            plot.title = element_text(size = 18),
+            axis.text = element_text(size = 15),
+            strip.text.x = element_text(size = 18),
+            strip.text.y = element_text(size = 18)) +
       # facet_grid(rows = vars(BioResult), cols = vars(FlowResult)) +
       facet_wrap(~ChannelType) +
       guides(col= guide_legend(title= ""))
+
+    m1
+    file.name1 <- paste0(out.dir, "12_", metrics[m], "_", goals[g], "_mixed_mod_maps_per_result_New.jpg")
     
-    
-    file.name1 <- paste0(out.dir, "12_", metrics[m], "_mixed_mod_maps_per_result_New.jpg")
-    
-    ggsave(m1, filename=file.name1, dpi=500, height=10, width=17)
+    ggsave(m1, filename=file.name1, dpi=500, height=14, width=20)
     
   }
   
+}
 
-m1
 
 # Comparing to Natural Flows ----------------------------------------------
-
-## load change in delta
-data <- read.csv("ignore/12_Change_in_delta_to_hit_thresholds_Mixed_Model.csv")
-head(data)
-
-# Type X Healthy
-# Type A Unhealthy, flow not altered
-# Type B Can reach ref DH within 10% 
-# Type C Can reach BO with 10%
-# Type D Can reach Inc (0.1) with 10% 
-# Type E Can't achieve inc improvement with 10%
-
-## get categories
-categories <- data %>%
-  mutate(
-    Categories = case_when(
-      HealthyCSCI == "Yes" ~ "Type X",
-      NoFlowProblem == "Yes" & HealthyCSCI == "No" ~ "Type A",
-      Threshold == "NAT" & RelChangeInDelta <= 10 ~ "Type B",
-      ChannelType != "NAT" & RelChangeInDelta <= 10 ~ "Type C",
-      RelChangeInDeltaINC <= 10 ~ "Type D",
-      TRUE ~ "Type E"  # Assign NA if none of the conditions are met
-    )
-  )
-
-# view(categories)
-head(categories)
-
-## if type X or A add deltah_final to change in delta - but maybe just NA as these don't matter in analysis
-## if type B or C - add deltah_final to change in delta
-## if type D - new delta
-## if type E - NA
-## then add on 50th percentile of natural flows
-## and see if its between the 10th and 90th percentile
-
-categoriesDF <- categories %>%
-  select(masterid:ChannelType, Threshold, BioThresh, Categories, newDelta, ChangeInDelta)   %>%
-  mutate(AdjustedDelta = ifelse(Categories == "Type D", newDelta, (deltah_final+ChangeInDelta))) %>%
-  mutate(AdjustedDelta = ifelse(Categories %in% c("Type A", "Type X"), deltah_final, AdjustedDelta)) %>%
-  # mutate(AdjustedDelta = ifelse(Categories == "Type E", NA, AdjustedDelta)) %>%
-  select(-newDelta)
-
-categoriesDF
-
-write.csv(categoriesDF, "final_data/12_change_in_delta_current_delta_Mixed_Model.csv")
 
 ## upload natural flows from Megan
 
@@ -736,11 +725,20 @@ natFlows <- read.csv("input_data/change_in_delta_range.csv") %>%
 names(natFlows)
 head(natFlows)
 
-head(categoriesDF)
+## observed delta
+ChangeDx <- read.csv("ignore/12_Change_in_delta_to_hit_thresholds_Mixed_Model.csv")
+head(ChangeDx)
+
+## calculate adjusted delta - only on ref flows - add deltah_final to changeindelta
+
+AdDel <- ChangeDx %>%
+  filter(Threshold == "NAT") %>%
+  mutate(AdjustedDelta = deltah_final + ChangeInDelta,
+         WithinRef = ifelse(deltah_final >= Lower & deltah_final <= Upper, "Yes", "No")) 
 
 ## join new categories to natural flows
 
-catsNat <- full_join(categoriesDF, natFlows, by = c("masterid","sampleyear", "hydro.endpoints"), relationship = "many-to-many")
+catsNat <- full_join(AdDel, natFlows, by = c("masterid","sampleyear", "hydro.endpoints"), relationship = "many-to-many")
 ## the ones that did not match are Q99 - no nat flows so OK
 # ind <- which(is.na(catsNat$comid))
 # 
@@ -764,17 +762,18 @@ write_csv(catsNat2, "ignore/12_currentCSF_nat_flows_categories.csv")
 
 counts <- catsNat2 %>%
   drop_na(ChannelType) %>%
+  filter(!WithinRef == "Yes") %>% ## only count the sites outsdie ref
   mutate(ChannelType = ifelse(ChannelType %in% c("SB0", "SB2"), "SB", ChannelType)) %>% ## add SB2 & 0 toegther
   mutate(ChannelType = ifelse(ChannelType %in% c("NAT", "SB1"), "NAT", ChannelType)) %>% ## add SB1 &NAT together
   filter(wyt == "all") %>% ## use only "all" wyt
-  select(masterid, hydro.endpoints, ChannelType, Categories, WithinNaturalRange) %>% ## remove columns
+  select(masterid, hydro.endpoints, ChannelType, WithinNaturalRange) %>% ## remove columns
   distinct() %>% ## remove duplicates
-  group_by(hydro.endpoints, ChannelType, Categories, WithinNaturalRange) %>% tally() %>% ## count n sites per category
+  group_by(hydro.endpoints, ChannelType,  WithinNaturalRange) %>% tally() %>% ## count n sites per category
   ungroup(WithinNaturalRange) %>% 
   mutate(TotalPerCategory = sum(n)) %>% ## calculate total sites per category
   mutate(PercPerCategory = n/TotalPerCategory*100) %>% ## calculate percentage
-  drop_na(Categories, WithinNaturalRange) %>% ## drop NAs Q99 no nat flows
-  mutate(Categories = factor(Categories, levels = c("Type X", "Type A", "Type B", "Type C", "Type D", "Type E")))  %>%
+  drop_na( WithinNaturalRange) %>% ## drop NAs Q99 no nat flows
+  # mutate(Categories = factor(Categories, levels = c("Type X", "Type A", "Type B", "Type C", "Type D", "Type E")))  %>%
   mutate(ChannelType = factor(ChannelType, levels = c("NAT", "SB", "HB"),
                             labels = c("NAT & SB1",  "SB0 & SB2", "HB"))) ## make channel type a factor
   
@@ -785,61 +784,63 @@ head(counts)
 # counts[ind,] ## all Q99 so no ref flows
 
 ## save
-write.csv(counts, "final_data/12_n_sites_per_category_within_ref_flows.csv")
+write.csv(counts, "ignore/12_n_sites_per_category_within_ref_flows.csv")
 
-## plot stacked bar plot
-
-ffms <- unique(counts$hydro.endpoints)
-
-for(f in 1:length(ffms)) {
-  
+## plot stacked bar plot with % and n sites that are within natural range
+  countsx
   countsx <- counts %>%
-    filter(hydro.endpoints == ffms[f]) %>%
-    filter(!Categories == "Type X")
+    filter(WithinNaturalRange == "yes") %>%
+    inner_join(labels, by = "hydro.endpoints") %>%
+    group_by(Flow.Metric.Name) %>%
+    mutate(TotalPerFFM = sum(TotalPerCategory)) %>%
+    mutate(TotalPerFFMn = sum(n)) %>%
+    mutate(FlowMetn = paste0(Flow.Metric.Name, " (", TotalPerFFM, ")"))
   
   ## plot percentages
-  p1 <- ggplot(countsx, aes(fill=WithinNaturalRange, y=n, x=Categories)) + 
+  p1 <- ggplot(countsx, aes(fill=ChannelType, y=n, x=FlowMetn)) + 
     geom_bar(position="fill", stat="identity") +
-    facet_wrap(~ChannelType, scales = "free_y") +
+    # facet_wrap(~ChannelType, scales = "free_y") +
     theme_classic() +
-    scale_y_continuous(name = "Number of Sites (%)") +
-    scale_x_discrete(name = "") +
-    scale_fill_discrete(name = "Within Natural Range?") +
-    theme(legend.title = element_text(size=15), 
+    scale_y_continuous(name = "Sites (%)") +
+    # scale_x_discrete(name = "")
+    scale_fill_manual(name = "Channel Type", values=c("chartreuse4", "dodgerblue2", "firebrick3")) +
+    theme(legend.title = element_text(size=18), 
           legend.position = "bottom",
-          legend.text=element_text(size=15),
-          axis.text.x = element_text(size = 15, angle = 45, hjust = 1),
-          axis.text.y = element_text(size = 15),
-          axis.title = element_text(size = 15),
-          strip.text.x = element_text(size = 15),
-          strip.text.y = element_text(size = 15))
+          legend.text=element_text(size=18),
+          axis.text.x = element_text(size = 18),
+          axis.text.y = element_text(size = 18),
+          axis.title = element_text(size = 18),
+          axis.title.x = element_text( size = 18),
+          strip.text.x = element_text(size = 18),
+          strip.text.y = element_text(size = 18)) +
+    scale_x_discrete(name = "", labels = label_wrap(4)) 
   p1
-  file.name1 <- paste0(out.dir, "12_", ffms[f], "_stacked_bar_n_sites_nat_flows_percent.jpg")
-  ggsave(p1, filename=file.name1, dpi=300, height=7, width=9)
+  
+  file.name1 <- paste0(out.dir, "12_all_FFMs_stacked_bar_n_sites_nat_flows_percent.jpg")
+  ggsave(p1, filename=file.name1, dpi=300, height=10, width=15)
   
   ### plot N
-  p2 <- ggplot(countsx, aes(fill=WithinNaturalRange, y=n, x=Categories)) + 
+  p2 <- ggplot(countsx, aes(fill=ChannelType, y=n, x=FlowMetn)) + 
     geom_bar(position="stack", stat="identity") +
-    facet_wrap(~ChannelType, scales = "free_y") +
+    # facet_wrap(~ChannelType, scales = "free_y") +
     theme_classic() +
-    scale_y_continuous(name = "Number of Sites") +
-    scale_x_discrete(name = "") +
-    scale_fill_discrete(name = "Within Natural Range?") +
-    theme(legend.title = element_text(size=15), 
+    scale_y_continuous(name = "Sites (n)") +
+    scale_x_discrete(name = "", labels = label_wrap(4)) +
+    scale_fill_manual(name = "Channel Type", values=c("chartreuse4", "dodgerblue2", "firebrick3")) +
+    theme(legend.title = element_text(size=18), 
           legend.position = "bottom",
-          legend.text=element_text(size=15),
-          axis.text.x = element_text(size = 15, angle = 45, hjust = 1),
-          axis.text.y = element_text(size = 15),
-          axis.title = element_text(size = 15),
-          strip.text.x = element_text(size = 15),
-          strip.text.y = element_text(size = 15))
+          legend.text=element_text(size=18),
+          axis.text.x = element_text(size = 18),
+          axis.text.y = element_text(size = 18),
+          axis.title = element_text(size = 18),
+          strip.text.x = element_text(size = 18),
+          strip.text.y = element_text(size = 18)) 
+    
+  p2
+  file.name1 <- paste0(out.dir, "12_all_FFMs_stacked_bar_n_sites_nat_flows_count.jpg")
+  ggsave(p2, filename=file.name1, dpi=300, height=10, width=18)
   
-  file.name1 <- paste0(out.dir, "12_", ffms[f], "_stacked_bar_n_sites_nat_flows_count.jpg")
-  ggsave(p2, filename=file.name1, dpi=300, height=7, width=9)
   
-  
-}
-
 
 ## number of sites that need to go to zero flow. 
 
@@ -849,9 +850,8 @@ head(catsNat2)
 
 zeroFlow <- catsNat2 %>%
   filter(p50 == 0) %>%
-  mutate(Categories = factor(Categories, levels = c("Type X", "Type A", "Type B", "Type C", "Type D", "Type E")),
-         ChannelType = factor(ChannelType, levels = c("NAT", "SB0", "SB1", "SB2", "HB"))) %>%
-  select(masterid,comid,hydro.endpoints, deltah_final, ChannelType, Categories, p50) %>%
+  mutate(ChannelType = factor(ChannelType, levels = c("NAT", "SB0", "SB1", "SB2", "HB"))) %>%
+  select(masterid,comid,hydro.endpoints, deltah_final, ChannelType, p50) %>%
   distinct()
 zeroFlow
 
@@ -860,52 +860,16 @@ write.csv(zeroFlow, "Tables/12_appendix_sites_ref_zero.csv")
 
 unique(zeroFlow$hydro.endpoints) ## "DS_Mag_50"      "Wet_BFL_Mag_10"
 length(unique(zeroFlow$masterid)) ## 26
-unique(zeroFlow$Categories) ## "Type X" "Type E" "Type C" "Type A"
 
 ## count number of sites 
 
 cFlows <- zeroFlow %>%
-  select(masterid, hydro.endpoints, ChannelType, Categories) %>% ## remove columns
+  select(masterid, hydro.endpoints, ChannelType) %>% ## remove columns
   distinct() %>% ## remove duplicates
-  group_by(hydro.endpoints, ChannelType, Categories) %>% tally() %>%
+  group_by(hydro.endpoints, ChannelType) %>% tally() %>%
   inner_join(labels, by = "hydro.endpoints")
 
 cFlows  
 
 write.csv(cFlows, "Tables/12_num_sites_to_zero.csv")
 
-
-# count sites within SD of delta 0 ----------------------------------------
-
-## load change in delta
-data <- read.csv("ignore/12_Change_in_delta_to_hit_thresholds_Mixed_Model.csv")
-head(data)
-
-## get categories
-categories <- ChangeDxWide %>%
-  mutate(
-    Categories = case_when(
-      HealthyCSCI == "Yes" ~ "Type X",
-      HealthyCSCIBO == "Yes" ~ "Type X2",
-      WithinLims == "Yes" & HealthyCSCI == "No" ~ "Type A",
-      WithinLimsBO == "Yes" & HealthyCSCIBO == "No" ~ "Type A2",
-      Threshold == "NAT" & RelChangeInDelta <= 10 ~ "Type B",
-      !(ChannelType %in% c("NAT", "SB1")) & RelChangeInDelta <= 10 ~ "Type C",
-      RelChangeInDeltaINC <= 10 ~ "Type D",
-      TRUE ~ "Type E"  # Assign NA if none of the conditions are met
-    )
-  )
-
-
-# view(categories)
-head(categories)
-
-
-## add change in delta to delta H final
-
-absDelta <- categories %>%
-  mutate(NewDeltaAll = ifelse(Categories == "Type E", newDelta, newDeltaBO))
-  
-
-head(absDelta)
-## check that only channel types are counted on their own thresholds
