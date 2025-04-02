@@ -39,6 +39,9 @@ out.dir <- "final_figures/"
 load(file = "ignore/09_mixed_models.RData")
 gam_lme
 
+mod <- gam_lme[[6]]
+dim(mod$model)
+
 ## look up table 
 bio_h_summary <- read.csv("final_data/09_coefs_mixed_effects_model.csv")
 bio_h_summary
@@ -90,6 +93,12 @@ AllData <- AllData %>%
   drop_na(channel_engineering_class)
 
 head(AllData)
+## year range
+range(na.omit(AllData$sampleyear))
+## number of events
+nEvents <- AllData %>%
+  select(masterid, sampleyear, MetricValue) %>%
+  distinct()
 
 ## take the ffm, get a site, see where it hits the curve in delta H and score
 ##
@@ -231,14 +240,14 @@ head(ChangeDx)
 ## also filter dataset, only need the rows where channel type matches threshold
 ## relative change
 ChangeDxWide <- ChangeDx %>%
-  select(-c( X)) %>% ##
+  dplyr::select(-c( X)) %>% ##
   mutate(Match = ifelse(Threshold %in% c("NAT") , "Yes", "No")) %>% ## keep all ref threshold for Type B 
   mutate(Match = ifelse(Threshold %in% c("NAT") & ChannelType %in% c("SB1"), "Yes", Match)) %>% ## for SB1s Type B
   mutate(Match = ifelse(Threshold %in% c("SB0", "SB2") & ChannelType %in% c("SB0", "SB2"), "Yes", Match)) %>% ## for SBs for type c
   mutate(Match = ifelse(Threshold == "HB" & ChannelType == "HB", "Yes", Match)) %>% ## all other thresholds that match channel types for type C
   filter(Match == "Yes") %>%
   distinct() %>%
-  select(-c( Keep, Match))
+  dplyr::select(-c( Keep, Match))
 
 
 unique(ChangeDxWide$Threshold)
@@ -285,7 +294,7 @@ FlowChange <- BioChange %>%
   )) %>% ## define within/outside for NAT threshold but mod channel types
   group_by(masterid, hydro.endpoints, sampleyear) %>%
   mutate(FlowStatus2 = first(FlowStatus)) %>% ## take the status for the masterid and ffm
-  select(-FlowStatus) %>%
+  dplyr::select(-FlowStatus) %>%
   mutate(BOFlows = case_when( ## define within/outside for BO threshold - to add sites within BO as NAs later
     Threshold != "NAT" & deltah_final >= Lower & deltah_final <= Upper ~ "Within BO",
     Threshold != "NAT" & (deltah_final < Lower | deltah_final > Upper) ~ "Outside BO"
@@ -309,9 +318,9 @@ names(AllChange)
 
 ## Identify improvement needed for each scenario
 ImpNeeded <- AllChange %>%
-  select(masterid, sampleyear,ChannelType, PredCSCI, csci_Incr, MetricValue, RelChangeInDeltaINC, Threshold, RelChangeInDelta, BioStatus:Action) %>%
+  dplyr::select(masterid, sampleyear,ChannelType, PredCSCI, csci_Incr, MetricValue, RelChangeInDeltaINC, Threshold, RelChangeInDelta, BioStatus:Action) %>%
   mutate(Threshold2 = ifelse(Threshold == "NAT", "Standard", "Modified")) %>% ## put all mod thresholds together as they don't overlap 
-  select(-Threshold) %>%
+  dplyr::select(-Threshold) %>%
   pivot_wider(names_from = "Threshold2", values_from = RelChangeInDelta) %>% ## pivot longer so can take from column
   mutate(RefImprovement = case_when( ## improvement needed to get ref flows
     BioStatus == "Above Reference" & Action == "No Action/Protect" ~ "No Action", ## no action
@@ -380,13 +389,13 @@ categoriesx <- categories %>%
   mutate(MaxScore = max(MetricValue)) %>%
   mutate(Match = ifelse(MaxScore == MetricValue, "Yes", "No")) %>%
   filter(Match == "Yes" ) %>%
-  select(-Match) %>%
+  dplyr::select(-Match) %>%
   group_by(masterid, hydro.endpoints, ChannelType) %>% ## group by site and year and ffm
   mutate(sampleyear2 = max(sampleyear)) %>% ## get max year i.e., most recent - change here for lowest csci etc
   mutate(Match = ifelse(sampleyear2 == sampleyear, "Yes", "No")) %>%
   filter(Match == "Yes") %>%
   dplyr::select(-sampleyear2, -Match) %>% ## remove original score
-  distinct() %>%
+  distinct() #%>%
   mutate(TotalSitesCT = case_when(
     ChannelType %in% c("SB0", "SB2") ~ 43,
     ChannelType %in% c("SB1", "NAT") ~ 279,
@@ -399,13 +408,10 @@ write.csv(categoriesx, "ignore/12_categories_Mixed_Model.csv")
 names(categoriesx)
 length(unique(categoriesx$masterid)) ## 396
 
-## should the total sites be sites in each channel class?
-
-
 
 ## tally per channel type and target 
 tallyCats1 <- categoriesx %>%
-  select(-c(RelChangeInDeltaINC:Modified)) %>%
+  dplyr::select(-c(RelChangeInDeltaINC:Modified)) %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>% ## make long
   drop_na(Categories) %>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
   mutate(ChannelType = ifelse(ChannelType %in% c("SB0", "SB2"), "SB", ChannelType)) %>% ## add SB2 & 0 together
@@ -415,14 +421,14 @@ tallyCats1 <- categoriesx %>%
   group_by(ChannelType, hydro.endpoints,Target, Categories) %>% # add categories gto group
   mutate(Tally = length(unique(masterid))) %>% # count sites per category
   mutate(PercentSites = Tally/TotalSites*100) %>% ## get percentages
-  mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
-  select(Tally, TotalSites, PercentSites, PercentSitesCT) %>% ## remove cols
+  # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
+  dplyr::select(Tally, TotalSites, PercentSites) %>% ## remove cols
   distinct() %>%
   drop_na(ChannelType)
 
 ## get percentages for overall column
 tallyCatsOV <- categoriesx %>%
-  select(-c(RelChangeInDeltaINC:Modified)) %>%
+  dplyr::select(-c(RelChangeInDeltaINC:Modified)) %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>%
   drop_na(Categories) %>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
   group_by(hydro.endpoints, Target) %>%
@@ -430,8 +436,8 @@ tallyCatsOV <- categoriesx %>%
   group_by(hydro.endpoints, Target, Categories) %>% ## group by ffm and cats
   mutate(Tally = length(unique(masterid))) %>% ## count sites for each ffm and cat
   mutate(PercentSites = Tally/TotalSites*100) %>% ## percentage per ffm and cat
-  mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
-  select(Tally, TotalSites, PercentSites, PercentSitesCT) %>%
+  # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
+  dplyr::select(Tally, TotalSites, PercentSites, PercentSites) %>%
   mutate(ChannelType = "All") %>%
   distinct() %>%
   drop_na(ChannelType)
@@ -461,21 +467,23 @@ write.csv(tallyCats, "ignore/12_tally_categories_per_target_for_figures_V2.csv")
 
 ## tally per channel type and category - sites are in more than one category so use length(masterid) not unique
 ## OR take best target per category
+## if made 10% change in flow what would happen to all sites?
 
-
+categoriesx
 ## count sites per category
 tallyCats1c <- categoriesx %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>% ## make long
-  drop_na(Categories) %>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
+  # filter(!Categories %in% c("Non-flow related", "No Action")) %>%
+  drop_na(Categories) #%>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
   mutate(ChannelType = ifelse(ChannelType %in% c("SB0", "SB2"), "SB", ChannelType)) %>% ## add SB2 & 0 together
   mutate(ChannelType = ifelse(ChannelType %in% c("NAT", "SB1"), "NAT", ChannelType)) %>% ## add SB1 &NAT together
-  group_by(ChannelType, hydro.endpoints, Categories) %>% ## group
+  group_by(ChannelType, hydro.endpoints) %>% ## group
   mutate(TotalSites = length(unique(masterid))) %>% ## get total n sites
-  group_by(ChannelType, hydro.endpoints,Target, Categories) %>% # add categories gto group
+  group_by(ChannelType, hydro.endpoints, Categories, Target) %>% # add categories to group
   mutate(Tally = length(unique(masterid))) %>% # count sites per category
   mutate(PercentSites = Tally/TotalSites*100) %>% ## get percentages
   # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
-  select(Tally, TotalSites, PercentSites) %>% ## remove cols
+  dplyr::select(Tally, TotalSites, PercentSites) %>% ## remove cols
   distinct() %>%
   drop_na(ChannelType)
 
@@ -483,14 +491,15 @@ tallyCats1c
 ## get percentages for overall column
 tallyCatsOVc <- categoriesx %>%
   pivot_longer(RefImprovement:BOImprovement, names_to = "Target", values_to = "Categories") %>%
+  # filter(!Categories %in% c("Non-flow related", "No Action")) %>%
   drop_na(Categories) %>% ## remove NAs - sites that are below BO csci but within BO flows - focus on INC and ref improvement
-  group_by(hydro.endpoints, Categories) %>%
+  group_by(hydro.endpoints) %>%
   mutate(TotalSites = length(unique(masterid))) %>% ## get total sites for overall column
   group_by(hydro.endpoints, Target, Categories) %>% ## group by ffm and cats
   mutate(Tally = length(unique(masterid))) %>% ## count sites for each ffm and cat
   mutate(PercentSites = Tally/TotalSites*100) %>% ## percentage per ffm and cat
   # mutate(PercentSitesCT = Tally/TotalSitesCT*100) %>% ## get percentages per channel type
-  select(Tally, TotalSites, PercentSites) %>%
+  dplyr::select(Tally, TotalSites, PercentSites) %>%
   mutate(ChannelType = "All") %>%
   distinct() %>%
   drop_na(ChannelType)
@@ -501,15 +510,190 @@ tallyCats2c <- bind_rows(tallyCats1c, tallyCatsOVc)
 unique(tallyCats2c$Target)  
 unique(tallyCats2c$ChannelType)
 
+## calculate the remaining percentage
+df <- tallyCats1c %>%
+  ungroup() %>%
+  filter(!Categories %in% c("Non-flow related", "No Action")) 
+
+# Step 1: Pre-calculate total number of unique sites per ChannelType + hydro endpoint
+total_sites <- df %>%
+  distinct(masterid, ChannelType) %>%
+  count(ChannelType, name = "TotalSites")
+head(df)
+# ChannelType TotalSites
+# <chr>            <int>
+#   1 HB                  47
+# 2 NAT                 52
+# 3 SB0                  8
+# 4 SB1                  4
+# 5 SB2                 14
+
+
+category_priority <- c("Less than 10%" = 1, "10 - 50%" = 2, "Over 50%" = 3)
+# Define priority for targets
+target_priority <- c("RefImprovement" = 1, "BOImprovement" = 2, "INCImprovement" = 3)
+
+cat = "10 - 50%"
+cat = "Less than 10%"
+
+# Prep empty list and tracker
+final_summary <- list()
+assigned_tracker <- tibble(masterid = character(), ChannelType = character(), hydro.endpoints = character(), Target = character())
+
+# Get total sites per ChannelType
+total_sites <- df %>%
+  distinct(masterid, ChannelType, hydro.endpoints) %>%
+  count(ChannelType, hydro.endpoints, name = "TotalSites")
+total_sites
+
+# Loop through categories
+for (cat in names(category_priority)) {
+  
+  # All sites eligible for this category
+  eligible_sites <- df %>%
+    filter(Categories == cat)
+  
+  # Get assigned targets for this category (regardless of whether seen before)
+  assigned_sites <- eligible_sites %>%
+    filter(!is.na(Target)) %>%
+    distinct(masterid, ChannelType, hydro.endpoints, Target)
+
+  
+  # Join to previously assigned to keep best target
+  assigned_combined <- bind_rows(assigned_tracker, assigned_sites) %>%
+    mutate(TargetRank = target_priority[Target]) %>%
+    group_by(masterid, ChannelType, hydro.endpoints) %>%
+    arrange(TargetRank) %>%
+    slice(1) %>%
+    ungroup() %>%
+    dplyr::select(-TargetRank)
+  
+  assigned_combined
+
+  # Update tracker with best-so-far assignments
+  assigned_tracker <- assigned_combined
+
+  # For this category: show all target hits *including those from previous categories*
+  assigned_summary <- assigned_tracker %>%
+    # full_join(df %>% filter(Categories == cat), by = c("masterid", "ChannelType", "hydro.endpoints")) %>%
+    count(ChannelType, hydro.endpoints, Categories = cat, Target, name = "Sites")
+  
+  
+  # Calculate remaining: total - already assigned (tracker)
+  hydros_in_cat <- df %>%
+    # filter(Categories == cat) %>%
+    distinct(ChannelType, hydro.endpoints)
+
+  assigned_in_tracker <- assigned_tracker %>%
+    full_join(hydros_in_cat, by = c("ChannelType", "hydro.endpoints")) %>%
+    distinct(masterid, ChannelType, hydro.endpoints) %>%
+    group_by(ChannelType, hydro.endpoints) %>%
+    summarise(AssignedSites = length(na.omit(masterid))) 
+
+  # Join with all hydro endpoints to ensure complete list
+  remaining_summary <- hydros_in_cat %>%
+    left_join(total_sites, by = c("ChannelType", "hydro.endpoints")) %>%
+    left_join(assigned_in_tracker, by = c("ChannelType", "hydro.endpoints")) %>%
+    mutate(
+      AssignedSites = replace_na(AssignedSites, 0),
+      Sites = TotalSites - AssignedSites,
+      # Sites = ifelse(Sites < 0, 0, Sites),
+      Target = "Remaining",
+      Categories = cat
+    ) %>%
+    dplyr::select(ChannelType, hydro.endpoints, Categories, Target, Sites)
+
+  
+  remaining_summary
+  
+  # Combine into one summary
+  cat_summary <- bind_rows(assigned_summary, remaining_summary)
+  # Store summary
+  final_summary[[cat]] <- cat_summary
+}
+
+# Final full dataframe
+final_summary <- bind_rows(final_summary) %>%
+  arrange(ChannelType, hydro.endpoints, Categories, Target)
+
+## add overall column
+
+# Prepare a copy of df with ChannelType set to "All"
+df_all <- df %>%
+  mutate(ChannelType = "All")
+
+# Rerun the same process on df_all
+final_summary_all <- list()
+assigned_tracker_all <- tibble(masterid = character(), ChannelType = character(), hydro.endpoints = character(), Target = character())
+
+total_sites_all <- df_all %>%
+  distinct(masterid, ChannelType, hydro.endpoints) %>%
+  count(ChannelType, hydro.endpoints, name = "TotalSites")
+
+for (cat in names(category_priority)) {
+  
+  eligible_sites <- df_all %>% filter(Categories == cat)
+  
+  assigned_sites <- eligible_sites %>%
+    filter(!is.na(Target)) %>%
+    distinct(masterid, ChannelType, hydro.endpoints, Target)
+  
+  assigned_combined <- bind_rows(assigned_tracker_all, assigned_sites) %>%
+    mutate(TargetRank = target_priority[Target]) %>%
+    group_by(masterid, ChannelType, hydro.endpoints) %>%
+    arrange(TargetRank) %>%
+    slice(1) %>%
+    ungroup() %>%
+    dplyr::select(-TargetRank)
+  
+  assigned_tracker_all <- assigned_combined
+  
+  assigned_summary <- assigned_tracker_all %>%
+    count(ChannelType, hydro.endpoints, Categories = cat, Target, name = "Sites")
+  
+  hydros_in_cat <- df_all %>%
+    distinct(ChannelType, hydro.endpoints)
+  
+  assigned_in_tracker <- assigned_tracker_all %>%
+    full_join(hydros_in_cat, by = c("ChannelType", "hydro.endpoints")) %>%
+    distinct(masterid, ChannelType, hydro.endpoints) %>%
+    group_by(ChannelType, hydro.endpoints) %>%
+    summarise(AssignedSites = length(na.omit(masterid)))
+  
+  remaining_summary <- hydros_in_cat %>%
+    left_join(total_sites_all, by = c("ChannelType", "hydro.endpoints")) %>%
+    left_join(assigned_in_tracker, by = c("ChannelType", "hydro.endpoints")) %>%
+    mutate(
+      AssignedSites = replace_na(AssignedSites, 0),
+      Sites = TotalSites - AssignedSites,
+      Target = "Remaining",
+      Categories = cat
+    ) %>%
+    dplyr::select(ChannelType, hydro.endpoints, Categories, Target, Sites)
+  
+  cat_summary <- bind_rows(assigned_summary, remaining_summary)
+  final_summary_all[[cat]] <- cat_summary
+}
+
+# Combine and bind to original
+final_summary_all <- bind_rows(final_summary_all)
+final_summary_all
+# Add to your original final_summary
+final_summary_all <- final_summary_all %>%
+  arrange(ChannelType, hydro.endpoints, Categories, Target)
+
+final_summary <- bind_rows(final_summary, final_summary_all)
+
 ## data for categories figure 
-tallyCats2c <- tallyCats2c %>%
-  mutate(ChannelType = factor(ChannelType, levels = c( "NAT", "SB", "HB", "All"),
-                              labels = c("NAT & SB1", "SB0 & SB2", "HB", "All"))) %>%
+tallyCats2c <- final_summary %>%
+  mutate(ChannelType = factor(ChannelType, levels = c( "NAT", "SB1", "SB0", "SB2", "HB", "All"),
+                              labels = c("NAT & SB1", "NAT & SB1", "SB0 & SB2", "SB0 & SB2", "HB", "All"))) %>%
   inner_join(labels, by = "hydro.endpoints") %>%
   mutate(Categories = factor(Categories, levels = c("No Action", "Non-flow related","Less than 10%","10 - 50%","Over 50%"))) %>%
-  mutate(Target = factor(Target, levels = c("RefImprovement", "BOImprovement", "INCImprovement"),
-                        labels = c("Reference Condition", "Best Observed Condition", "Incremental Improvement")))
+  mutate(Target = factor(Target, levels = c("RefImprovement", "BOImprovement", "INCImprovement", "Remaining"),
+                        labels = c("Reference Condition", "Best Observed Condition", "Incremental Improvement", "Minimal Improvement")))
 tallyCats2c
+
 ## save
 write.csv(tallyCats2c, "ignore/12_tally_categories_per_category_for_figures_V2.csv")
 
@@ -519,13 +703,14 @@ write.csv(tallyCats2c, "ignore/12_tally_categories_per_category_for_figures_V2.c
 
 nSites <- categoriesx %>%
   ungroup() %>%
-  select(masterid, ChannelType) %>%
+  dplyr::select(masterid, ChannelType) %>%
   distinct() %>%
   group_by(ChannelType) %>%
   tally()
 
 nSites 
 
+tallyCats <- read.csv("final_data/12_tally_categories_per_target_for_figures_V2.csv")
 head(tallyCats)
 ## plot all FFM per Target - bars rep improvement categories
 
@@ -536,8 +721,8 @@ for(t in 1:length(tars)) {
   
   ## filter to target
   tallyCatsx <- tallyCats %>%
-    filter(Target == tars[t], !ChannelType == "All") 
-  tallyCatsx
+    filter(Target == tars[t]) 
+
   ## plot
   a1 <- ggplot(tallyCatsx, aes(fill=Categories, y=PercentSites, x=ChannelType)) + 
     geom_bar(position="stack", stat="identity") +
@@ -564,10 +749,103 @@ for(t in 1:length(tars)) {
   
 }
 
+## plot individual FFMs
+tallyCats
+tars
+## filter to target
+tallyCatsx <- tallyCats %>%
+  filter(Target == tars[1], 
+         hydro.endpoints %in% c("DS_Mag_50", "Peak_10"))
+
+## plot
+a1 <- ggplot(tallyCatsx, aes(fill=Categories, y=PercentSites, x=ChannelType)) + 
+  geom_bar(position="stack", stat="identity") +
+  # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
+  scale_fill_manual(values=hcl.colors(n=5, palette = "Zissou 1"))+ ## colour of points
+  facet_wrap(~Flow.Metric.Name) +
+  # scale_fill_manual(values=catPal)+
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.text=element_text(size=15),
+        plot.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        strip.text.x = element_text(size = 15),
+        strip.text.y = element_text(size = 15)) +
+  scale_x_discrete(name = "", labels = label_wrap(4)) +
+  # scale_x_discrete(name = "") +
+  scale_y_continuous(name = "Sites (%)")
+
+a1
+
+file.name1 <- paste0(out.dir, "12_DS_peak_example_ref_cond_target_mixed_mod_percent_sites.jpg")
+ggsave(a1, filename=file.name1, dpi=600, height=7, width=10)
+
+tars
+## filter to target
+tallyCatsx <- tallyCats %>%
+  filter(Target == tars[3], 
+         hydro.endpoints %in% c("DS_Mag_50", "Peak_10"))
+
+## plot BO improvement
+a1 <- ggplot(tallyCatsx, aes(fill=Categories, y=PercentSites, x=ChannelType)) + 
+  geom_bar(position="stack", stat="identity") +
+  # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
+  scale_fill_manual(values=hcl.colors(n=5, palette = "Zissou 1"))+ ## colour of points
+  facet_wrap(~Flow.Metric.Name) +
+  # scale_fill_manual(values=catPal)+
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.text=element_text(size=15),
+        plot.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        strip.text.x = element_text(size = 15),
+        strip.text.y = element_text(size = 15)) +
+  scale_x_discrete(name = "", labels = label_wrap(4)) +
+  # scale_x_discrete(name = "") +
+  scale_y_continuous(name = "Sites (%)")
+
+a1
+
+file.name1 <- paste0(out.dir, "12_DS_peak_example_BO_cond_target_mixed_mod_percent_sites.jpg")
+ggsave(a1, filename=file.name1, dpi=600, height=7, width=10)
+
+## filter to target
+tallyCatsx <- tallyCats %>%
+  filter(Target == tars[2], 
+         hydro.endpoints %in% c("FA_Mag", "Peak_10"))
+
+## plot INC improvement for fall pulse and peak
+a1 <- ggplot(tallyCatsx, aes(fill=Categories, y=PercentSites, x=ChannelType)) + 
+  geom_bar(position="stack", stat="identity") +
+  # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
+  scale_fill_manual(values=hcl.colors(n=5, palette = "Zissou 1"))+ ## colour of points
+  facet_wrap(~Flow.Metric.Name) +
+  # scale_fill_manual(values=catPal)+
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.text=element_text(size=15),
+        plot.title = element_text(size = 15),
+        axis.text = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        strip.text.x = element_text(size = 15),
+        strip.text.y = element_text(size = 15)) +
+  scale_x_discrete(name = "", labels = label_wrap(4)) +
+  # scale_x_discrete(name = "") +
+  scale_y_continuous(name = "Sites (%)")
+
+a1
+
+file.name1 <- paste0(out.dir, "12_FP_peak_example_INC_cond_target_mixed_mod_percent_sites.jpg")
+ggsave(a1, filename=file.name1, dpi=600, height=7, width=10)
+
+
 ## plot per categories - bars rep target achievable
 cats <- unique(tallyCats2c$Categories)
+tallyCats2c
 cats
-c=1
+c = 2
 library(scales)
 
 for(c in 1:length(cats)) {
@@ -577,10 +855,41 @@ for(c in 1:length(cats)) {
     filter(Categories == cats[c])
 
   ## plot
-  a1 <- ggplot(data, aes(fill=Target, y=Tally, x=ChannelType)) + 
+  a1 <- ggplot(data, aes(fill=Target, y=Sites, x=ChannelType)) + 
     geom_bar(position="stack", stat="identity") +
     # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
-    scale_fill_manual(values=hcl.colors(n=3, palette = "Zissou 1"))+ ## colour of points
+    scale_fill_manual(values=hcl.colors(n=4, palette = "Zissou 1"))+ ## colour of points
+    facet_wrap(~Flow.Metric.Name, scales = "free_y") +
+    # scale_fill_manual(values=catPal)+
+    theme(legend.title = element_blank(), 
+          legend.position = "bottom",
+          legend.text=element_text(size=15),
+          plot.title = element_text(size = 15),
+          axis.text = element_text(size = 15),
+          axis.title.y = element_text(size = 15),
+          strip.text.x = element_text(size = 15),
+          strip.text.y = element_text(size = 15)) +
+    scale_x_discrete(name = "", labels = label_wrap(4)) +
+    scale_y_continuous(name = "Sites (n)")
+  a1
+  
+  file.name1 <- paste0(out.dir, "12_", cats[c], "_category_mixed_mod_count_sites.jpg")
+  ggsave(a1, filename=file.name1, dpi=600, height=7, width=12)
+  
+}
+
+## percent
+for(c in 1:length(cats)) {
+  
+  ## filter to target
+  data <- tallyCats2c %>%
+    filter(Categories == cats[c])
+  
+  ## plot
+  a1 <- ggplot(data, aes(fill=Target, y=Sites, x=ChannelType)) + 
+    geom_bar(position="fill", stat="identity") +
+    # scale_fill_manual(values=c("chartreuse4", "dodgerblue1", "orange","pink", "firebrick3"))+ ## colour of points
+    scale_fill_manual(values=hcl.colors(n=4, palette = "Zissou 1"))+ ## colour of points
     facet_wrap(~Flow.Metric.Name, scales = "free_y") +
     # scale_fill_manual(values=catPal)+
     theme(legend.title = element_blank(), 

@@ -162,11 +162,37 @@ for(m in 1:length(mets)) {
   ggsave(T1, filename=file.name1, dpi=300, height=7, width=9)
 }
 
+## all on one plot
+
+## boxplot
+T2 <- (ggplot(AllDatax,  aes(x=ChannelType, y=deltah_final, fill = ChannelType)) +
+         geom_boxplot() +
+         scale_fill_manual(values=c("chartreuse4", "dodgerblue2", "firebrick3"))+
+         scale_x_discrete(name=paste("")) +
+         scale_y_continuous(name = paste0("Delta FFM")) +
+         theme_classic() +
+         geom_hline(yintercept = 0, linetype="dashed", linewidth=0.5, color = "grey50") +
+         theme(legend.position="none")) +
+  facet_wrap(~Flow.Metric.Name, scales = "free_y") +
+  theme(legend.title = element_blank(), 
+        # legend.position = "bottom",
+        legend.text=element_text(size=25),
+        axis.text = element_text(size = 25),
+        axis.title = element_text(size = 25),
+        strip.text.x = element_text(size = 25),
+        strip.text.y = element_text(size = 25))
+
+
+T2
+
+file.name1 <- paste0(out.dir, "08_ALL_boxplot_delta_range.jpg")
+ggsave(T2, filename=file.name1, dpi=300, height=20, width=22)
+
 
 # Bar plots of categories -------------------------------------------------
 
 ## data
-tallyCats <- read.csv("final_data/12_tally_categories_for_figures.csv")
+tallyCats <- read.csv("final_data/12_tally_categories_per_target_for_figures_V2.csv")
 head(tallyCats)
 
 ## plot all FFM
