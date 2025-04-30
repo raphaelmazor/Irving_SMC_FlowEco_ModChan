@@ -192,7 +192,7 @@ ggsave(T2, filename=file.name1, dpi=300, height=20, width=22)
 # Bar plots of categories -------------------------------------------------
 
 ## data
-tallyCats <- read.csv("final_data/12_tally_categories_per_target_for_figures_V2.csv")
+tallyCats <- read.csv("ignore/12_tally_categories_per_target_for_figures_V2.csv")
 head(tallyCats)
 
 ## plot all FFM
@@ -216,7 +216,7 @@ ggsave(a1, filename=file.name1, dpi=600, height=7, width=10)
 
 ## define ffms
 ffms <- unique(tallyCats$hydro.endpoints)
-
+s=1
 ## loop
 for(s in 1:length(ffms)) {
   

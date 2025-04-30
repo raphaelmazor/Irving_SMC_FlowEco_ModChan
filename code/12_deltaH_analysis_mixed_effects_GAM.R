@@ -395,7 +395,7 @@ categoriesx <- categories %>%
   mutate(Match = ifelse(sampleyear2 == sampleyear, "Yes", "No")) %>%
   filter(Match == "Yes") %>%
   dplyr::select(-sampleyear2, -Match) %>% ## remove original score
-  distinct() #%>%
+  distinct() %>%
   mutate(TotalSitesCT = case_when(
     ChannelType %in% c("SB0", "SB2") ~ 43,
     ChannelType %in% c("SB1", "NAT") ~ 279,
@@ -698,7 +698,7 @@ tallyCats2c
 write.csv(tallyCats2c, "ignore/12_tally_categories_per_category_for_figures_V2.csv")
 
 # Figures -----------------------------------------------------------------
-
+library(scales)
 ## number of sites per category
 
 nSites <- categoriesx %>%
@@ -710,8 +710,15 @@ nSites <- categoriesx %>%
 
 nSites 
 
-tallyCats <- read.csv("final_data/12_tally_categories_per_target_for_figures_V2.csv")
+tallyCats <- read.csv("ignore/12_tally_categories_per_target_for_figures_V2.csv")
 head(tallyCats)
+
+## make factor for figure 
+tallyCats <- tallyCats %>%
+  mutate(ChannelType = factor(ChannelType, levels = c("NAT & SB1", "SB0 & SB2", "HB", "All"))) %>%
+  # inner_join(labels, by = "hydro.endpoints") %>%
+  mutate(Categories = factor(Categories, levels = c("No Action","Non-flow related","Less than 10%","10 - 50%","Over 50%")))
+
 ## plot all FFM per Target - bars rep improvement categories
 
 tars <- unique(tallyCats$Target)
