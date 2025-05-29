@@ -8,7 +8,7 @@ library(mgcv)
 library(itsadug)
 # library(mapview)
 library(tidylog)
-
+citation("mgcv")
 
 ## data
 load(file = "final_data/01_bugs_algae_flow_joined_by_masterid.RData") 

@@ -1,4 +1,4 @@
-## using different curves: 50 GAM, Quantile GAM, Mixed Model GAM
+##  Mixed Model GAM
 ## find delta H to get to: 0.79, 0.67, incremental improvement from obs CSCI
 
 ## packages
@@ -101,7 +101,6 @@ nEvents <- AllData %>%
   distinct()
 
 ## take the ffm, get a site, see where it hits the curve in delta H and score
-##
 ## how far to get it to the delta H limits?
 ## how far for an incremental increase?
 

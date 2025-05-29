@@ -108,3 +108,91 @@ also splits up data per county and saves to teams
 ## 07a_tables_data_packets_standard.R
 
 same as 07 but for standard 0.79 analysis
+
+produces files
+07_ffm_bio_stresLevel_data_packet_all_counties_standard.csv
+07_sum_strikes_all_sites_unhealthy_bio_standard_threshold.csv
+
+Also splits up data per county 
+
+## 08_figures_for_MS_v2.R
+
+creates figures for manuscript/report 
+also some older figures not used in final analysis
+saves them in MS_Figures/
+
+08_all_sites_map_v2.jpg - map of sites
+ending in _boxplot_delta_range.jpg - Ranges of Delta H
+mixed_effects_GAM_predicted - GAM model plots
+
+Other plots i.e. ending with mixed_mod_percent_sites_per_cat & 08_mixed_mod_percent_sites_per_cat_bar
+are incorrect. more recent versions used in the report are in script 12
+
+## 08_figures_for_MS.R
+
+older versions of figures in 08a using quantile GAM info
+
+## 09_mixed_model_GAMs.R
+
+runs mixed model GAMs for csci. 
+loops through FFM and slope/intercept/slope & intercept random effects
+
+Produces files:
+09_mixed_models.RData - models
+ignore/09_mixed_effects_model_predictions.RData - predictions
+final_data/09_coefs_mixed_effects_model.csv - coefficients
+
+Produces tables:
+Tables/09_mixed_model_gam_coefs.csv
+
+also attempts quantile mixed model GAMs but not used in final analysis
+
+## 10_deltaH_analysis.R
+
+creates functions to extract information from model/curve
+
+estimates ranges of FFM for GAM models 
+Calculates "Type xx" categories from old analysis
+creates old figures
+
+## 11_Mixed_model_Gam_thresholds.R
+
+uses function from script 10 to grab FFM ranges/thresholds from mixed model GAM
+
+Produces files:
+final_data/11_chosen_models_thresholds_Mixed_Effects.csv
+final_data/11__Mixed_Effects_GAMs_FFM_Ranges_With_Adjustments.csv
+ignore/11_impact_ffm_bio_ffm_limits_Mixed_Effects.csv
+
+formats for old categories. manuscript framework categories applied in script 12
+
+## 12_deltaH_analysis_mixed_effects_GAM.R
+
+Applies framework outlined in manuscript
+calculates change in ffm to achieve different csci targets
+tallies results to get manuscript figures
+
+Applies framework outlined in manuscript-
+
+# Biology	  Hydrology	  Action
+# Above ref	Within ref	No action/protect
+#           Outside ref	No action/monitor
+# 
+# 
+# Above BOs	Within ref	Investigate nonflow
+#           Outside ref	Identify improvement needed to get ref (<10, 10 to 50, >50)
+#                       Identify improvement needed to get +0.1 CSCI (<10, 10 to 50, >50)
+# 
+# Below BO	Within ref	Investigate nonflow
+#           Outside ref	Identify improvement needed to get ref (<10, 10 to 50, >50)
+#                       Identify improvement needed to get bo (<10, 10 to 50, >50)
+#                       Identify improvement needed to get +0.1 CSCI (<10, 10 to 50, >50)
+
+Produces files:
+ignore/12_Change_in_delta_to_hit_thresholds_Mixed_Model.csv
+ignore/12_tally_categories_per_category_for_figures_V2.csv
+
+Figures -
+ends with - target_mixed_mod_percent_sites.jpg # sites to reach specific target
+ends with - _category_mixed_mod_percent_sites.jpg # sites with specific change reaches which target
+

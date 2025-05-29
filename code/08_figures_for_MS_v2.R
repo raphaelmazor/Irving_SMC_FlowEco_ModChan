@@ -38,7 +38,7 @@ counties_socal_sf<-counties_sf %>%
 sheds_sf<- st_read("ignore/SpatialData/SMCSheds2009/SMCSheds2009.shp")
 
 ## set bounding box 
-st_bbox(imps_sf)
+
 
 ## create beige palet
 
@@ -347,11 +347,6 @@ for(m in 1:length(metrics)) {
   ggsave(m1, filename=file.name1, dpi=500, height=10, width=10)
   
 }
-
-
-
-
-
 
 
 # Gams plots --------------------------------------------------------------
